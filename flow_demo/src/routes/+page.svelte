@@ -1,9 +1,12 @@
 <script>
   import Flow from '$lib/components/Flow.svelte';
+  import {SvelteFlowProvider} from '@xyflow/svelte';
 </script>
 
 <main>
-  <Flow />
+    <SvelteFlowProvider>
+        <Flow />
+    </SvelteFlowProvider>
 </main>
 
 <style>

@@ -84,16 +84,7 @@
   //   could be handy to use this to center the view on a node
   //   fitView();
 
-  $: {
-    if (selected)
-      fitView({
-        nodes: [
-          {
-            id: id,
-          },
-        ],
-      });
-  }
+  $: if (selected) fitView({ nodes: [{ id: id }] });
 
   //   for advanced use cases, check the docs for more info
   //   const { connectionMode } = useStore();
