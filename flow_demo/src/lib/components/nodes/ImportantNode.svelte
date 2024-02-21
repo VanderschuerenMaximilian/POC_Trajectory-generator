@@ -4,6 +4,7 @@
     Position,
     type NodeProps,
     useSvelteFlow,
+    NodeToolbar,
   } from '@xyflow/svelte';
 
   type $$Props = NodeProps;
@@ -37,15 +38,22 @@
     undefined;
   positionAbsoluteY;
 
-  export let data: { label: string, originalPosition: { x: number, y: number } };
+  export let data: {
+    label: string;
+    originalPosition: { x: number; y: number };
+  };
 
   const { label } = data;
 
   const { fitView } = useSvelteFlow();
 
-  $: if (selected) fitView({ nodes: [{ id: id }] })
+  $: if (selected) fitView({ nodes: [{ id: id }] });
 </script>
 
+<NodeToolbar position={Position.Top} align={'start'}>
+  <button>delete</button>
+  <button>edit</button>
+</NodeToolbar>
 <div class="container">
   <Handle id="left" type="target" position={Position.Left} />
   <h1>{label}</h1>
@@ -70,5 +78,20 @@
     margin: 0;
     font-size: 0.7rem;
     font-family: Arial, Helvetica, sans-serif;
+  }
+
+  button {
+    margin: 0;
+    padding: 8px;
+    border: 0px solid transparent;
+    border-radius: 5px;
+    background: #b0b0b0;
+    cursor: pointer;
+    color: white;
+  }
+
+  button:hover {
+    background: #a0a0a0;
+    transition-duration: 0.2s;
   }
 </style>
