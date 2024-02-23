@@ -30,6 +30,7 @@
   {nodeTypes}
   {snapGrid}
   fitView
+  on:nodeclick={(e) => console.log(e.detail.node)}
 >
   <Controls />
   <Background gap={[20, 20]} variant={BackgroundVariant.Dots} />
