@@ -1,5 +1,10 @@
 <script lang="ts">
-  import type { NodeProps } from '@xyflow/svelte';
+  import {
+    NodeToolbar,
+    type NodeProps,
+    Position,
+    useSvelteFlow,
+  } from '@xyflow/svelte';
   import { ChevronDown, Plus } from 'lucide-svelte';
 
   type $$Props = NodeProps;
@@ -37,6 +42,8 @@
   let foldStep = false;
   let foldDatapoint = false;
 
+  const { fitView } = useSvelteFlow();
+
   function foldChilds() {
     foldStep = !foldStep;
   }
@@ -44,10 +51,21 @@
   function foldDatapoints() {
     foldDatapoint = !foldDatapoint;
   }
+
+  $: if (selected) fitView({ nodes: [{ id: id }], duration: 600, padding: 1 });
 </script>
 
 {#if data}
-  <div class="container">
+  <NodeToolbar position={Position.Top} align={'start'}>
+    <div class="toolbar__container">
+      <button class="toolbar__button">edit</button>
+      <button class="toolbar__button">delete</button>
+    </div>
+  </NodeToolbar>
+  <div
+    class="container"
+    style={selected ? 'outline: 2px solid #555555' : 'border:none'}
+  >
     <div class="header">
       <h1 class="title">{data.label}</h1>
       <button class="header__button" on:click={foldChilds}>
@@ -67,9 +85,9 @@
           <p>domain:</p>
           <p>start date:</p>
           <p>end date:</p>
-          <label for="required">
+          <label for="{id}-required">
             <span>required</span>
-            <input type="checkbox" id="required" disabled />
+            <input type="checkbox" id="{id}-required" disabled />
           </label>
         </div>
         <div>
@@ -77,9 +95,9 @@
           <p>{data.domain}</p>
           <p>{data.date_range_before}</p>
           <p>{data.date_range_after}</p>
-          <label for="repeat">
+          <label for="{id}-repeat">
             <span>repeat</span>
-            <input type="checkbox" id="repeat" disabled />
+            <input type="checkbox" id="{id}-repeat" disabled />
           </label>
         </div>
       </div>
@@ -148,7 +166,7 @@
     border-radius: 15px;
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
     overflow: hidden;
-    padding-bottom: 4px;
+    padding-bottom: 12px;
   }
 
   .header {
@@ -198,6 +216,10 @@
     padding: 0px 8px;
   }
 
+  .info__container div {
+    min-width: 110px;
+  }
+
   .datapoints__container {
     display: flex;
     flex-direction: column;
@@ -214,5 +236,23 @@
   .datapoints__title__container {
     display: flex;
     align-items: center;
+  }
+
+  .toolbar__container {
+    display: flex;
+  }
+
+  .toolbar__button {
+    margin: 0 8px;
+    padding: 8px;
+    border: 0px solid transparent;
+    border-radius: 5px;
+    background: #b0b0b0;
+    cursor: pointer;
+    color: white;
+  }
+
+  .toolbar__button:hover {
+    background-color: #8d8d8d;
   }
 </style>

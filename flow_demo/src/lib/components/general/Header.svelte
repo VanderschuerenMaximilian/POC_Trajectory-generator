@@ -174,6 +174,12 @@
     font-family: Arial;
   }
 
+  button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .carousel__list {
     display: flex;
     list-style: none;

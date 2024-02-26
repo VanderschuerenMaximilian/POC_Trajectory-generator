@@ -1,6 +1,6 @@
 import { type XYPosition, type Node, type Edge, Position } from "@xyflow/svelte";
 
-const nodeConfig = { targetPosition: Position.Left, sourcePosition: Position.Right, width: 150, height: 50 }
+const nodeConfig = { targetPosition: Position.Left, sourcePosition: Position.Right }
 let count: number = 0;
 
 export default class Extraction {
@@ -57,8 +57,16 @@ export default class Extraction {
             position: this.position,
         }
         const node: Node = { ...baseConfig, ...{ data: specifics }, ...nodeConfig }
-        this.position = { x: this.position.x + 500, y: this.position.y }
+        // this.position = { x: this.position.x + 350, y: this.position.y }
+        this.changePosition()
         return node
+    }
+
+    private async changePosition() {
+        if (this.position.x > 1000) this.position = { x: 0, y: this.position.y + 350 }
+        else {
+            this.position = { x: this.position.x + 350, y: this.position.y }
+        }
     }
 
     private reset(): void {
