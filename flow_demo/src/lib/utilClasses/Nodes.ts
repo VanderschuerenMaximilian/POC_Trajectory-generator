@@ -18,7 +18,7 @@ export default class Extraction {
     }
 
     async extractOptions(options: any) {
-        console.log('extractOptions', options)
+        // console.log('extractOptions', options)
         this.reset()
         for (const option of options) await this.assembleFlow('event', option)
     }
@@ -46,6 +46,7 @@ export default class Extraction {
     }
 
     private async assembleOption(option: any) {
+        this.reset()
         console.log('still working on function "assebleOption"')
     }
 

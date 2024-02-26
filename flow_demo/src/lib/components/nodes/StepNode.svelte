@@ -55,74 +55,72 @@
   $: if (selected) fitView({ nodes: [{ id: id }], duration: 600, padding: 1 });
 </script>
 
-{#if data}
-  <NodeToolbar position={Position.Top} align={'start'}>
-    <div class="toolbar__container">
-      <button class="toolbar__button">edit</button>
-      <button class="toolbar__button">delete</button>
-    </div>
-  </NodeToolbar>
-  <div
-    class="container"
-    style={selected ? 'outline: 2px solid #555555' : 'border:none'}
-  >
-    <div class="header">
-      <h1 class="title">{data.label}</h1>
-      <button class="header__button" on:click={foldChilds}>
-        <ChevronDown
-          size="24"
-          color="white"
-          style="{foldStep
-            ? 'transform: rotate(180deg);'
-            : 'transform: rotate(0);'} transition: all 0.15s ease-in;"
-        />
-      </button>
-    </div>
-    <div class="body__container" style={foldStep ? 'display: none' : ''}>
-      <div class="info__container">
-        <div>
-          <p>description:</p>
-          <p>domain:</p>
-          <p>start date:</p>
-          <p>end date:</p>
-          <label for="{id}-required">
-            <span>required</span>
-            <input type="checkbox" id="{id}-required" disabled />
-          </label>
-        </div>
-        <div>
-          <p>{data.description}</p>
-          <p>{data.domain}</p>
-          <p>{data.date_range_before}</p>
-          <p>{data.date_range_after}</p>
-          <label for="{id}-repeat">
-            <span>repeat</span>
-            <input type="checkbox" id="{id}-repeat" disabled />
-          </label>
-        </div>
+<NodeToolbar position={Position.Top} align={'start'}>
+  <div class="toolbar__container">
+    <button class="toolbar__button">edit</button>
+    <button class="toolbar__button">delete</button>
+  </div>
+</NodeToolbar>
+<div
+  class="container"
+  style={selected ? 'outline: 2px solid #555555' : 'border:none'}
+>
+  <div class="header">
+    <h1 class="title">{data.label}</h1>
+    <button class="header__button" on:click={foldChilds}>
+      <ChevronDown
+        size="24"
+        color="white"
+        style="{foldStep
+          ? 'transform: rotate(180deg);'
+          : 'transform: rotate(0);'} transition: all 0.15s ease-in;"
+      />
+    </button>
+  </div>
+  <div class="body__container" style={foldStep ? 'display: none' : ''}>
+    <div class="info__container">
+      <div>
+        <p>description:</p>
+        <p>domain:</p>
+        <p>start date:</p>
+        <p>end date:</p>
+        <label for="{id}-required">
+          <span>required</span>
+          <input type="checkbox" id="{id}-required" disabled />
+        </label>
       </div>
-      <div class="datapoints__container">
-        <div class="datapoints__header">
-          <div class="datapoints__title__container">
-            <h2 class="subtitle">Datapoints</h2>
-            <button class="body__button">
-              <Plus size="24" />
-            </button>
-          </div>
-          <button class="body__button" on:click={foldDatapoints}>
-            <ChevronDown
-              size="24"
-              style="{foldDatapoint
-                ? 'transform: rotate(180deg);'
-                : 'transform: rotate(0);'} transition: all 0.15s ease-in;"
-            />
+      <div>
+        <p>{data.description}</p>
+        <p>{data.domain}</p>
+        <p>{data.date_range_before}</p>
+        <p>{data.date_range_after}</p>
+        <label for="{id}-repeat">
+          <span>repeat</span>
+          <input type="checkbox" id="{id}-repeat" disabled />
+        </label>
+      </div>
+    </div>
+    <div class="datapoints__container">
+      <div class="datapoints__header">
+        <div class="datapoints__title__container">
+          <h2 class="subtitle">Datapoints</h2>
+          <button class="body__button">
+            <Plus size="24" />
           </button>
         </div>
-        <div style={foldDatapoint ? 'display: none' : ''}>none, for now</div>
+        <button class="body__button" on:click={foldDatapoints}>
+          <ChevronDown
+            size="24"
+            style="{foldDatapoint
+              ? 'transform: rotate(180deg);'
+              : 'transform: rotate(0);'} transition: all 0.15s ease-in;"
+          />
+        </button>
       </div>
+      <div style={foldDatapoint ? 'display: none' : ''}>none, for now</div>
     </div>
   </div>
-{/if}
+</div>
 
 <style scoped>
   button {
@@ -161,7 +159,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-width: 280px;
+    max-width: 260px;
     background-color: #d9d9d9;
     border-radius: 15px;
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);

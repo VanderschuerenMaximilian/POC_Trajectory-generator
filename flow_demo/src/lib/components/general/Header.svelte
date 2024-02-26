@@ -98,7 +98,7 @@
     update(newActive);
     active++;
     if (active === items.length) active = 0;
-    console.log(active);
+    // console.log(active);
   }
 
   function getPrev() {
@@ -109,7 +109,7 @@
     update(newActive);
     active--;
     if (active < 0) active = items.length - 1;
-    console.log(active);
+    // console.log(active);
   }
 
   // TODO: something is going wrong when changing the data pos when clicking on the subnav
