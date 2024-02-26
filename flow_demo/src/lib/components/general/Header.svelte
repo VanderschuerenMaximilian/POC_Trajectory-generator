@@ -4,6 +4,7 @@
   import SubNavButton from './SubNavButton.svelte';
   import { onMount } from 'svelte';
   import { activeItem } from '$lib/store';
+  import { ChevronLeft, ChevronRight } from 'lucide-svelte';
 
   export let items: (IPhase | IEvent)[];
 
@@ -119,13 +120,15 @@
     active = parseInt(event.detail);
   }
 
-  $: $activeItem = items[active], console.log($activeItem);
+  $: ($activeItem = items[active]), console.log($activeItem);
 </script>
 
 <header>
   <nav class="carousel">
     <div class="carousel__container">
-      <button class="previous" on:click={getPrev}>prev</button>
+      <button class="previous" on:click={getPrev}>
+        <ChevronLeft size="24" color="black" />
+      </button>
       <ul class="carousel__list" bind:this={carouselList}>
         {#each items as item, i}
           {@const id = i.toString()}
@@ -134,7 +137,7 @@
             {id}
             data-pos={pos}
             class="carousel__item {item.type === 'phase' ? 'phase' : 'event'}"
-            >
+          >
             <!-- the same as the oneline above -->
             <!-- class:phase={item.type === 'phase'}
             class:event={item.type === 'event'} -->
@@ -142,11 +145,13 @@
           </li>
         {/each}
       </ul>
-      <button class="next" on:click={getNext}>next</button>
+      <button class="next" on:click={getNext}>
+        <ChevronRight size="24" color="black" />
+      </button>
     </div>
     <ul class="subnav">
       {#each items as item, i}
-        <SubNavButton {i} on:onSubNavClick={onSubNavClick} />
+        <SubNavButton {i} {item} on:onSubNavClick={onSubNavClick} />
       {/each}
     </ul>
   </nav>
@@ -290,6 +295,7 @@
   .subnav {
     display: flex;
     justify-content: center;
+    gap: 0.5rem;
     width: 100%;
     margin-top: 0.5rem;
     margin-bottom: 0rem;

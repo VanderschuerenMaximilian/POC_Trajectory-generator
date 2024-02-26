@@ -1,21 +1,33 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
+  import type { IEvent, IPhase } from '../types';
+  import { activeItem } from '$lib/store';
 
   export let i: number;
+  export let item: IPhase | IEvent;
+
+  let selectedItem: any;
 
   const dispatch = createEventDispatcher();
-
-  function setNumber(index: number) {
-    return index + 1;
-  }
 
   function handleClick() {
     dispatch('onSubNavClick', i);
   }
+
+  $: selectedItem = $activeItem;
 </script>
 
-<button id={i.toString()} on:click={handleClick}>
-  {setNumber(i)}
+<button
+  id={i.toString()}
+  on:click={handleClick}
+  class="{item.type === 'event' ? 'event' : 'phase'}
+  {item.name === selectedItem.name && item.type === 'event'
+    ? 'event_active'
+    : ''}
+{item.name === selectedItem.name && item.type === 'phase' ? 'phase_active' : ''}
+  "
+>
+  {item.name.charAt(0).toUpperCase() + item.name.charAt(1)}
 </button>
 
 <style scoped>
@@ -27,9 +39,29 @@
     height: 30px;
     cursor: pointer;
     transition: all 0.15s ease-in;
+    font:
+      14px Arial,
+      sans-serif;
+    font-weight: 500;
   }
 
-  button:hover {
-    background-color: #e0e0e0;
+  .phase_active {
+    background-color: crimson;
+    color: white;
+  }
+
+  .event_active {
+    background-color: #62caed;
+    color: white;
+  }
+
+  .phase:hover {
+    background-color: rgb(170, 33, 58);
+    color: white;
+  }
+
+  .event:hover {
+    background-color: #4a9dbf;
+    color: white;
   }
 </style>

@@ -17,7 +17,7 @@
   class={item.type === 'event' ? 'event' : 'phase'}
   on:click={handleClick}
 >
-  {i.toString()}. {item.name}
+  {item.name.charAt(0).toUpperCase() + item.name.slice(1)}
 </button>
 
 <style scoped>
@@ -32,6 +32,7 @@
     width: 100%;
     height: 100%;
     transition: all 0.15s ease-in;
+    color: white;
   }
 
   .phase {
@@ -40,7 +41,7 @@
   }
 
   .phase:hover {
-    background-color: rgb(221, 71, 101);
+    background-color: rgb(170, 33, 58);
   }
 
   .event {
