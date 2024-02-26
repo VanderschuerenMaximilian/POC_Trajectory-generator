@@ -14,6 +14,7 @@
   import ColorPickerNode from '$lib/components/nodes/ColorPickerNode.svelte';
   import MainNode from './nodes/MainNode.svelte';
   import ImportantNode from './nodes/ImportantNode.svelte';
+  import { trajectory, items } from '$lib/store';
 
   const snapGrid: [number, number] = [25, 25];
 

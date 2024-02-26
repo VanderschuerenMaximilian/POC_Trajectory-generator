@@ -4,3 +4,6 @@ import { initialNodes, initialEdges } from "./nodes-and-edges";
 
 export const nodes = writable<Node[]>(initialNodes)
 export const edges = writable<Edge[]>(initialEdges)
+
+export const trajectory = writable()
+export const items = writable()
