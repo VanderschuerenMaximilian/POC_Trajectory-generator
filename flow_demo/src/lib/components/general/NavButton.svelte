@@ -8,13 +8,16 @@
   const dispatch = createEventDispatcher();
 
   function handleClick(event: any) {
-    // console.log('clicked', event.target);
     dispatch('onClick', event.target);
   }
 </script>
 
-<button id="{i.toString()}" class="carousel__button" on:click={handleClick}>
-  {item.name}
+<button
+  id={i.toString()}
+  class={item.type === 'event' ? 'event' : 'phase'}
+  on:click={handleClick}
+>
+  {i.toString()}. {item.name}
 </button>
 
 <style scoped>
@@ -28,5 +31,24 @@
     font-size: 16px;
     width: 100%;
     height: 100%;
+    transition: all 0.15s ease-in;
+  }
+
+  .phase {
+    border-radius: 5px;
+    background-color: crimson;
+  }
+
+  .phase:hover {
+    background-color: rgb(221, 71, 101);
+  }
+
+  .event {
+    border-radius: 55px;
+    background-color: #62caed;
+  }
+
+  .event:hover {
+    background-color: #4a9dbf;
   }
 </style>
