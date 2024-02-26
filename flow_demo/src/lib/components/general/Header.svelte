@@ -3,6 +3,7 @@
   import NavButton from './NavButton.svelte';
   import SubNavButton from './SubNavButton.svelte';
   import { onMount } from 'svelte';
+  import { activeItem } from '$lib/store';
 
   export let items: (IPhase | IEvent)[];
 
@@ -12,9 +13,8 @@
 
   onMount(async () => {
     if (carouselList) carouselItems = carouselList?.children;
+    $activeItem = items[active];
   });
-
-  // $: console.log(items);
 
   function onNavClick(event: any) {
     if (!event.detail) return;
@@ -118,6 +118,8 @@
     update(newActive);
     active = parseInt(event.detail);
   }
+
+  $: $activeItem = items[active], console.log($activeItem);
 </script>
 
 <header>
@@ -126,11 +128,16 @@
       <button class="previous" on:click={getPrev}>prev</button>
       <ul class="carousel__list" bind:this={carouselList}>
         {#each items as item, i}
+          {@const id = i.toString()}
+          {@const pos = assignIndex(items, i)}
           <li
-            id={i.toString()}
-            data-pos={assignIndex(items, i)}
+            {id}
+            data-pos={pos}
             class="carousel__item {item.type === 'phase' ? 'phase' : 'event'}"
-          >
+            >
+            <!-- the same as the oneline above -->
+            <!-- class:phase={item.type === 'phase'}
+            class:event={item.type === 'event'} -->
             <NavButton {i} {item} on:onClick={onNavClick} />
           </li>
         {/each}

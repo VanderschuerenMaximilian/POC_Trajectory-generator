@@ -81,10 +81,10 @@
     const childs = $nodes.filter((node) => node.parentNode === id);
     if (fold && childs.length > 0) {
       foldChilds();
-      console.log('fold node: ', id);
+      // console.log('fold node: ', id);
     } else if (!fold && childs.length > 0) {
       unfoldChilds();
-      console.log('unflod node: ', id);
+      // console.log('unflod node: ', id);
     }
   }
 </script>
