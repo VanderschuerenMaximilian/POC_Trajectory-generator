@@ -1,7 +1,8 @@
 <script lang="ts">
   import Dialog from '../radar-svelete-components/components/Dialog.svelte';
+  import type { ITrajectoryObj } from '../types';
 
-  export let trajectoryObj: any;
+  export let trajectoryObj: ITrajectoryObj;
   export let dialog: HTMLDialogElement;
 </script>
 

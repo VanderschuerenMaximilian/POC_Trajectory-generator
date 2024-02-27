@@ -6,11 +6,11 @@
   export let i: number;
   export let item: IPhase | IEvent;
 
-  let selectedItem: any;
+  let selectedItem: IPhase | IEvent;
 
   const dispatch = createEventDispatcher();
 
-  function handleClick() {
+  function handleClick(): void {
     dispatch('onSubNavClick', i);
   }
 

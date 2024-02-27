@@ -103,7 +103,7 @@
     });
   }
 
-  function getPos(current: number, active: number) {
+  function getPos(current: number, active: number): number {
     const diff = current - active;
     if (Math.abs(current - active) > 3) {
       return -current;
@@ -112,22 +112,19 @@
     return diff;
   }
 
-  function swapPos(current: number, active: number) {
+  function swapPos(current: number, active: number): number {
     const diff = current - active;
 
     // TODO: make clean code of this
     if (diff < -3) {
       if (diff + 7 > 3) {
         return diff + 6;
-      }
-      else return diff + 7;
+      } else return diff + 7;
     } else if (diff > 3) {
       if (diff - 7 < -3) {
         return diff - 6;
-      }
-      else return diff - 7;
-    } 
-    else {
+      } else return diff - 7;
+    } else {
       return diff;
     }
 
@@ -137,7 +134,8 @@
     // } else return diff;
   }
 
-  function assignIndex(items: (IPhase | IEvent)[], index: number) {
+  function assignIndex(items: (IPhase | IEvent)[], index: number): number {
+    // TODO: make clean code of this
     if (index + 3 === items.length) {
       return -3;
     } else if (index + 2 === items.length) {
@@ -149,7 +147,7 @@
     }
   }
 
-  function getNext() {
+  function getNext(): void {
     let newActiveId = active + 1;
     if (newActiveId === items.length) newActiveId = 0;
     let newActive = getCorrespondingItem(newActiveId.toString());
@@ -157,10 +155,9 @@
     update(newActive);
     active++;
     if (active === items.length) active = 0;
-    // console.log(active);
   }
 
-  function getPrev() {
+  function getPrev(): void {
     let newActiveId = active - 1;
     if (newActiveId < 0) newActiveId = items.length - 1;
     let newActive = getCorrespondingItem(newActiveId.toString());
@@ -168,10 +165,9 @@
     update(newActive);
     active--;
     if (active < 0) active = items.length - 1;
-    // console.log(active);
   }
 
-  function onSubNavClick(event: any) {
+  function onSubNavClick(event: CustomEvent): void {
     const id = event.detail.toString();
     let newActive = getCorrespondingItem(id);
     if (!newActive) return;

@@ -11,6 +11,7 @@
   import EditStepDialog from '../dialogs/EditStepDialog.svelte';
   import DeleteStepDialog from '../dialogs/DeleteStepDialog.svelte';
   import AddDatapointDialog from '../dialogs/AddDatapointDialog.svelte';
+  import type { IStepNode } from './types';
 
   type $$Props = NodeProps;
 
@@ -42,7 +43,7 @@
   export let positionAbsoluteY: $$Props['positionAbsoluteY'] | undefined =
     undefined;
   positionAbsoluteY;
-  export let data: any;
+  export let data: IStepNode;
 
   let foldStep = false;
   let foldDatapoint = false;
@@ -51,13 +52,8 @@
   let deleteDialog: HTMLDialogElement;
   let addDatapointDialog: HTMLDialogElement;
 
-  onMount(() => {
-    node.addEventListener('click', (event: PointerEvent) => {
-      console.log(event);
-      if (event.altKey) {
-        fitView({ nodes: [{ id: id }], duration: 600, padding: 1 });
-      }
-    });
+  onMount(async () => {
+    await assignKeyboardFeatures();
   });
 
   const { fitView } = useSvelteFlow();
@@ -86,7 +82,13 @@
     fitView({ nodes: [{ id: id }], duration: 600, padding: 1 });
   }
 
-  // $: if (selected) fitView({ nodes: [{ id: id }], duration: 600, padding: 1 });
+  function assignKeyboardFeatures() {
+    node.addEventListener('click', (event: PointerEvent) => {
+      if (event.altKey) {
+        zoomIn();
+      }
+    });
+  }
 </script>
 
 {#if data}

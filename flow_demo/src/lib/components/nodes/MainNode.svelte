@@ -40,8 +40,6 @@
   let fold = false;
 
   function foldChilds() {
-    // console.log($nodes);
-    // console.log('Let all childs slide under the main node');
     nodes.update((n) => {
       return n.map((node) => {
         if (node.parentNode === id) {
@@ -81,10 +79,8 @@
     const childs = $nodes.filter((node) => node.parentNode === id);
     if (fold && childs.length > 0) {
       foldChilds();
-      // console.log('fold node: ', id);
     } else if (!fold && childs.length > 0) {
       unfoldChilds();
-      // console.log('unflod node: ', id);
     }
   }
 </script>

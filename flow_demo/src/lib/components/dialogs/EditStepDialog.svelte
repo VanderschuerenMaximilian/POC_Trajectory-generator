@@ -1,7 +1,8 @@
 <script lang="ts">
+  import type { IStepNode } from '../nodes/types';
   import Dialog from '../radar-svelete-components/components/Dialog.svelte';
 
-  export let step: any;
+  export let step: IStepNode;
   export let editDialog: HTMLDialogElement;
 </script>
 

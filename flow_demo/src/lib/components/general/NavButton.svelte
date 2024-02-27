@@ -7,7 +7,7 @@
 
   const dispatch = createEventDispatcher();
 
-  function handleClick(event: any) {
+  function handleClick(event: any): void {
     dispatch('onClick', event.target);
   }
 </script>
