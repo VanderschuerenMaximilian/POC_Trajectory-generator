@@ -4,7 +4,7 @@
     edges,
     activeItem,
     items as itemsStore,
-    trajectory,
+    trajectory as trajectoryStore,
   } from '$lib/store';
   import {
     SvelteFlow,
@@ -13,10 +13,6 @@
     BackgroundVariant,
     MiniMap,
     type NodeTypes,
-    type Node,
-    type Edge,
-    useSvelteFlow,
-    Panel,
   } from '@xyflow/svelte';
   // 👇 this is important! You need to import the styles for Svelte Flow to work
   import '@xyflow/svelte/dist/style.css';
@@ -26,6 +22,8 @@
   import { onMount } from 'svelte';
   import Extraction from '$lib/utilClasses/Nodes';
   import StepNode from './nodes/StepNode.svelte';
+  import TrajectroyPanel from './general/TrajectroyPanel.svelte';
+  import type { ITrajectory } from './types';
 
   const extraction = new Extraction();
   const snapGrid: [number, number] = [25, 25];
@@ -37,9 +35,11 @@
   };
 
   let items: any = [];
+  let trajectory: ITrajectory;
 
   onMount(async () => {
-    items = itemsStore;
+    items = $itemsStore;
+    trajectory = $trajectoryStore;
   });
 
   async function getChildren(parentNode: any) {
@@ -60,35 +60,16 @@
   $: getChildren($activeItem);
 </script>
 
+<!-- fitView={true} -->
 <SvelteFlow
   {nodes}
   {edges}
   {nodeTypes}
   {snapGrid}
-  fitView={true}
   on:nodeclick={(e) => console.log(e.detail.node)}
 >
   <Controls />
   <Background gap={[20, 20]} variant={BackgroundVariant.Dots} />
-  <!-- TODO: style the panel & place it in a component -->
-  <Panel position="top-left">
-    <div>
-      <h1>{$trajectory.episode_object.name}</h1>
-      <p>{$trajectory.episode_object.description}</p>
-    </div>
-  </Panel>
+  <TrajectroyPanel {trajectory} />
   <MiniMap />
 </SvelteFlow>
-
-<style scoped>
-  div {
-    background-color: #f3f3f3;
-    padding: 16px;
-    border-radius: 15px;
-  }
-
-  h1,
-  p {
-    margin: 0;
-  }
-</style>
