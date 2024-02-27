@@ -50,6 +50,7 @@
       );
       $nodes = steps;
       $edges = stepsEdges;
+      console.log($edges)
     } else if (parentNode.type === 'event') {
       extraction.extractOptions(parentNode.options);
       $nodes = [];

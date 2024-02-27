@@ -11,14 +11,12 @@ export default class Extraction {
     optionsEdges: Edge[] = [];
 
     async extractSteps(steps: any) {
-        // console.log('extractSteps', steps)
         this.reset()
         for (const step of steps) await this.assembleFlow('phase', step)
         return { steps: this.steps, stepsEdges: this.stepsEdges }
     }
 
     async extractOptions(options: any) {
-        // console.log('extractOptions', options)
         this.reset()
         for (const option of options) await this.assembleFlow('event', option)
     }
@@ -42,7 +40,8 @@ export default class Extraction {
             datapoints: step.datapoints,
         } 
         const node = await this.assembleNode('stepNode', specifics)
-        this.steps = [...this.steps, node]  
+        if (this.steps.length >= 1) this.assembleStepEdge((parseInt(node.id) - 1).toString(), node.id)
+        this.steps = [...this.steps, node]
     }
 
     private async assembleOption(option: any) {
@@ -69,6 +68,12 @@ export default class Extraction {
         else {
             this.position = { x: this.position.x + 350, y: this.position.y }
         }
+    }
+
+    private assembleStepEdge(parentId: any, targetId: any): void {
+        const edge: Edge = { id: crypto.randomUUID(), source: parentId, target: targetId, type: 'step' }
+        console.log('edge', edge)
+        this.stepsEdges = [...this.stepsEdges, edge]
     }
 
     private reset(): void {

@@ -4,6 +4,7 @@
     type NodeProps,
     Position,
     useSvelteFlow,
+    Handle,
   } from '@xyflow/svelte';
   import { ChevronDown, Plus } from 'lucide-svelte';
   import { onMount } from 'svelte';
@@ -110,6 +111,10 @@
   class="container"
   style={selected ? 'outline: 2px solid #555555' : 'border:none'}
 >
+  {#if id !== '0'}
+    <Handle id="left" type="target" position={Position.Left} />
+  {/if}
+  <Handle id="right" type="source" position={Position.Right} />
   <div class="header">
     <h1 class="title">{data.label}</h1>
     <button class="header__button" on:click={foldChilds}>
