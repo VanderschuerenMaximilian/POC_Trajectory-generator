@@ -24,6 +24,7 @@
     title: trajectory.episode_object.name,
     description: trajectory.episode_object.description,
     version: trajectory.version,
+    domain: trajectory.episode_object.concept.domain_name,
   }}
   <EditTrajectoryDialog bind:dialog {trajectoryObj} />
 
@@ -59,7 +60,7 @@
 <style scoped>
   .container {
     background-color: #f3f3f3;
-    padding: 16px;
+    padding: 12px;
     border-radius: 15px;
     position: relative;
     min-width: 320px;
@@ -83,7 +84,7 @@
   }
 
   .body {
-    margin-top: 16px;
+    margin-top: 8px;
     min-height: 50px;
     max-width: 250px;
     color: #686868;

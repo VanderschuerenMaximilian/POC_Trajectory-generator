@@ -49,6 +49,7 @@ export interface ITrajectoryObj {
     title: string;
     description: string;
     version: string;
+    domain: string;
 }
 
 export interface ITrajectory {

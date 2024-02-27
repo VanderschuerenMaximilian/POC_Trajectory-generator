@@ -5,7 +5,6 @@
   import { onMount } from 'svelte';
   import { activeItem } from '$lib/store';
   import { ChevronLeft, ChevronRight } from 'lucide-svelte';
-  import { get } from 'svelte/store';
 
   export let items: (IPhase | IEvent)[];
 
@@ -214,7 +213,7 @@
 
 <style scoped>
   header {
-    background-color: #f3f3f3;
+    /* background-color: #f3f3f3; */
     padding: 0.25rem;
     border-bottom: 1px solid #e0e0e0;
   }
@@ -243,6 +242,7 @@
     padding: 0;
     justify-content: center;
     perspective: 46px;
+    margin: 6px 0;
   }
 
   .carousel__item {
@@ -357,7 +357,7 @@
     justify-content: center;
     gap: 0.5rem;
     width: 100%;
-    margin-top: 0.5rem;
+    margin-top: 0.2rem;
     margin-bottom: 0rem;
     padding: 0;
     list-style: none;

@@ -32,7 +32,7 @@
 
 <style scoped>
   button {
-    background-color: #f3f3f3;
+    background-color: inherit;
     border: none;
     border-radius: 50%;
     width: 30px;

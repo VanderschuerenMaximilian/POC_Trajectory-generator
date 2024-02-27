@@ -72,7 +72,6 @@ export default class Extraction {
 
     private assembleStepEdge(parentId: any, targetId: any): void {
         const edge: Edge = { id: crypto.randomUUID(), source: parentId, target: targetId, type: 'step' }
-        console.log('edge', edge)
         this.stepsEdges = [...this.stepsEdges, edge]
     }
 

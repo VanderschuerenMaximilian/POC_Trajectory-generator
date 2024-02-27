@@ -25,6 +25,9 @@
 </script>
 
 <main>
+  <div style="opacity: 0;">
+    <Header {items} />
+  </div>
   <Header {items} />
   <!-- TODO: change the responsiveness not by key but by an different method -->
   {#key $activeItem}
@@ -42,7 +45,6 @@
   }
 
   section {
-    height: 80vh;
-    /* border: 1px solid black; */
+    height: 68vh;
   }
 </style>

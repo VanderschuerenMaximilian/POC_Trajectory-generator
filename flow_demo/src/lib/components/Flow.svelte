@@ -50,7 +50,6 @@
       );
       $nodes = steps;
       $edges = stepsEdges;
-      console.log($edges)
     } else if (parentNode.type === 'event') {
       extraction.extractOptions(parentNode.options);
       $nodes = [];
@@ -61,12 +60,12 @@
   $: getChildren($activeItem);
 </script>
 
-<!-- fitView={true} -->
 <SvelteFlow
   {nodes}
   {edges}
   {nodeTypes}
   {snapGrid}
+  fitView={true}
   on:nodeclick={(e) => console.log(e.detail.node)}
 >
   <Controls />
