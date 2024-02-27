@@ -48,7 +48,7 @@
   onMount(() => {
     node.addEventListener('click', (event: PointerEvent) => {
       console.log(event);
-      if (event.shiftKey) {
+      if (event.altKey) {
         fitView({ nodes: [{ id: id }], duration: 600, padding: 1 });
       }
     });
@@ -79,12 +79,7 @@
   style={selected ? 'outline: 2px solid #555555' : 'border:none'}
 >
   <div class="header">
-    <div class="title__container">
-      <h1 class="title {foldStep ? 'folded' : ''}">{data.label}</h1>
-      <button class="header__button edit">
-        <Pen size="16" color="white" />
-      </button>
-    </div>
+    <h1 class="title">{data.label}</h1>
     <button class="header__button" on:click={foldChilds}>
       <ChevronDown
         size="24"
@@ -197,16 +192,6 @@
     box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.25);
   }
 
-  .title__container {
-    display: flex;
-    align-items: center;
-    gap: 1px;
-  }
-
-  .edit {
-    padding: 4px;
-  }
-
   .title {
     margin: 0;
     padding-left: 8px;
@@ -216,10 +201,7 @@
     font-weight: 600;
     color: white;
     line-height: 1.5rem;
-    max-width: 160px;
-  }
-
-  .folded {
+    max-width: 220px;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
