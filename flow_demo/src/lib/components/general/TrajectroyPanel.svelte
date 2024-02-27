@@ -18,8 +18,7 @@
       <div class="header">
         <div class="title">
           <h1 class={fold ? 'one-line' : ''}>
-            {trajectory?.episode_object.name} dadjabdhj dad afdeafea eabf haebfh
-            baefhb eakfb aekbf ak
+            {trajectory?.episode_object.name}
           </h1>
           <button>
             <Pen size={24} />

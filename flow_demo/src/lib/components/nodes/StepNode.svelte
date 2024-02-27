@@ -6,6 +6,7 @@
     useSvelteFlow,
   } from '@xyflow/svelte';
   import { ChevronDown, Plus } from 'lucide-svelte';
+  import { onMount } from 'svelte';
 
   type $$Props = NodeProps;
 
@@ -42,6 +43,17 @@
   let foldStep = false;
   let foldDatapoint = false;
 
+  let node: any;
+
+  onMount(() => {
+    node.addEventListener('click', (event: PointerEvent) => {
+      console.log(event);
+      if (event.shiftKey) {
+        fitView({ nodes: [{ id: id }], duration: 600, padding: 1 });
+      }
+    });
+  });
+
   const { fitView } = useSvelteFlow();
 
   function foldChilds() {
@@ -52,7 +64,7 @@
     foldDatapoint = !foldDatapoint;
   }
 
-  $: if (selected) fitView({ nodes: [{ id: id }], duration: 600, padding: 1 });
+  // $: if (selected) fitView({ nodes: [{ id: id }], duration: 600, padding: 1 });
 </script>
 
 <NodeToolbar position={Position.Top} align={'start'}>
@@ -62,6 +74,7 @@
   </div>
 </NodeToolbar>
 <div
+  bind:this={node}
   class="container"
   style={selected ? 'outline: 2px solid #555555' : 'border:none'}
 >
@@ -105,7 +118,7 @@
         <div class="datapoints__title__container">
           <h2 class="subtitle">Datapoints</h2>
           <button class="body__button">
-            <Plus size="24" />
+            <Plus size="16" />
           </button>
         </div>
         <button class="body__button" on:click={foldDatapoints}>
@@ -160,6 +173,7 @@
     align-items: center;
     justify-content: center;
     max-width: 260px;
+    min-width: 220px;
     background-color: #d9d9d9;
     border-radius: 15px;
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
@@ -206,6 +220,10 @@
     flex-direction: column;
     justify-content: center;
     gap: 1rem;
+  }
+
+  .body__container:hover {
+    cursor: default;
   }
 
   .info__container {

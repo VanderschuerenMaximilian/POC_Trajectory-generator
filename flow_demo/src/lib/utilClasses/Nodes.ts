@@ -56,6 +56,7 @@ export default class Extraction {
             id: id.toString(),
             type,
             position: this.position,
+            dragHandle: '.header',
         }
         const node: Node = { ...baseConfig, ...{ data: specifics }, ...nodeConfig }
         // this.position = { x: this.position.x + 350, y: this.position.y }
