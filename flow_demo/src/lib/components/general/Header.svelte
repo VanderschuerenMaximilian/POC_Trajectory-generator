@@ -5,6 +5,7 @@
   import { onMount } from 'svelte';
   import { activeItem } from '$lib/store';
   import { ChevronLeft, ChevronRight } from 'lucide-svelte';
+  import { get } from 'svelte/store';
 
   export let items: (IPhase | IEvent)[];
 
@@ -40,42 +41,100 @@
     const newActivePos = newActive.dataset.pos;
     const elems = Array.from(carouselItems);
     const current = elems.find((elem: any) => elem.dataset.pos == 0);
-    const prev = elems.find((elem: any) => elem.dataset.pos == -1);
-    const next = elems.find((elem: any) => elem.dataset.pos == 1);
-    const second = elems.find((elem: any) => elem.dataset.pos == -2);
-    const secondToLast = elems.find((elem: any) => elem.dataset.pos == 2);
-    const first = elems.find((elem: any) => elem.dataset.pos == -3);
-    const last = elems.find((elem: any) => elem.dataset.pos == 3);
+    const firstLeft = elems.find((elem: any) => elem.dataset.pos == -1);
+    const firstRight = elems.find((elem: any) => elem.dataset.pos == 1);
+    const secondLeft = elems.find((elem: any) => elem.dataset.pos == -2);
+    const secondRight = elems.find((elem: any) => elem.dataset.pos == 2);
+    const thirdLeft = elems.find((elem: any) => elem.dataset.pos == -3);
+    const thirdRight = elems.find((elem: any) => elem.dataset.pos == 3);
 
     // console.log({
-    //   current: current,
-    //   prev: prev,
-    //   next: next,
-    //   second: second,
-    //   secondToLast: secondToLast,
-    //   first: first,
-    //   last: last,
-    // })
+    //   0: current?.innerText,
+    //   1: firstRight?.innerText,
+    //   2: secondRight?.innerText,
+    //   3: thirdRight?.innerText,
+    //   4: thirdLeft?.innerText,
+    //   5: secondLeft?.innerText,
+    //   6: firstLeft?.innerText,
+    // });
 
     current?.classList.remove('carousel__item_active');
 
-    [current, prev, next, second, secondToLast, first, last].forEach(
-      (item: any) => {
-        if (!item) return;
-        let itemPos = item?.dataset.pos;
-        item.dataset.pos = getPos(itemPos, newActivePos);
-      }
-    );
+    [
+      current,
+      firstLeft,
+      firstRight,
+      secondLeft,
+      secondRight,
+      thirdLeft,
+      thirdRight,
+    ].forEach((item: any) => {
+      if (!item) return;
+      let itemPos = item?.dataset.pos;
+      item.dataset.pos = getPos(itemPos, newActivePos);
+    });
   }
 
-  function getPos(current: any, active: any) {
-    const diff = current - active;
+  function updateBySubNav(newActive: any) {
+    const newActivePos = newActive.dataset.pos;
+    const elems = Array.from(carouselItems);
+    const current = elems.find((elem: any) => elem.dataset.pos == 0);
+    const firstLeft = elems.find((elem: any) => elem.dataset.pos == -1);
+    const firstRight = elems.find((elem: any) => elem.dataset.pos == 1);
+    const secondLeft = elems.find((elem: any) => elem.dataset.pos == -2);
+    const secondRight = elems.find((elem: any) => elem.dataset.pos == 2);
+    const thirdLeft = elems.find((elem: any) => elem.dataset.pos == -3);
+    const thirdRight = elems.find((elem: any) => elem.dataset.pos == 3);
 
+    current?.classList.remove('carousel__item_active');
+
+    [
+      current,
+      firstRight,
+      secondRight,
+      thirdRight,
+      thirdLeft,
+      secondLeft,
+      firstLeft,
+    ].forEach((item: any) => {
+      if (!item) return;
+      let itemPos = item?.dataset.pos;
+      item.dataset.pos = swapPos(itemPos, newActivePos);
+    });
+  }
+
+  function getPos(current: number, active: number) {
+    const diff = current - active;
     if (Math.abs(current - active) > 3) {
       return -current;
     }
 
     return diff;
+  }
+
+  function swapPos(current: number, active: number) {
+    const diff = current - active;
+
+    // TODO: make clean code of this
+    if (diff < -3) {
+      if (diff + 7 > 3) {
+        return diff + 6;
+      }
+      else return diff + 7;
+    } else if (diff > 3) {
+      if (diff - 7 < -3) {
+        return diff - 6;
+      }
+      else return diff - 7;
+    } 
+    else {
+      return diff;
+    }
+
+    // 👇 like this?
+    // if (Math.abs(diff) > 3) {
+
+    // } else return diff;
   }
 
   function assignIndex(items: (IPhase | IEvent)[], index: number) {
@@ -112,15 +171,15 @@
     // console.log(active);
   }
 
-  // TODO: something is going wrong when changing the data pos when clicking on the subnav
   function onSubNavClick(event: any) {
-    let newActive = getCorrespondingItem(event.detail.toString());
+    const id = event.detail.toString();
+    let newActive = getCorrespondingItem(id);
     if (!newActive) return;
-    update(newActive);
-    active = parseInt(event.detail);
+    updateBySubNav(newActive);
+    active = event.detail;
   }
 
-  $: ($activeItem = items[active]), console.log($activeItem);
+  $: $activeItem = items[active];
 </script>
 
 <header>
@@ -171,7 +230,6 @@
     height: 100%;
     align-items: center;
     justify-content: center;
-    font-family: Arial;
   }
 
   button {
