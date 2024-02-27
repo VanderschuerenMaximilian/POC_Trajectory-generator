@@ -2,17 +2,31 @@
   import type { ITrajectory } from '../types';
   import { Panel } from '@xyflow/svelte';
   import { ChevronDown, Pen } from 'lucide-svelte';
+  import EditTrajectoryDialog from '../dialogs/EditTrajectoryDialog.svelte';
 
   export let trajectory: ITrajectory;
 
   let fold = false;
+  let dialog: HTMLDialogElement;
 
   function foldPanel() {
     fold = !fold;
   }
+
+  function editTrajectory() {
+    dialog.showModal();
+  }
 </script>
 
 {#if trajectory}
+  {@const trajectoryObj = {
+    id: trajectory.id,
+    title: trajectory.episode_object.name,
+    description: trajectory.episode_object.description,
+    version: trajectory.version,
+  }}
+  <EditTrajectoryDialog bind:dialog {trajectoryObj} />
+
   <Panel position="top-left">
     <div class="container">
       <div class="header">
@@ -20,7 +34,7 @@
           <h1 class={fold ? 'one-line' : ''}>
             {trajectory?.episode_object.name}
           </h1>
-          <button>
+          <button on:click={editTrajectory}>
             <Pen size={24} />
           </button>
         </div>

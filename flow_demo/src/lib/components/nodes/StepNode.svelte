@@ -5,8 +5,12 @@
     Position,
     useSvelteFlow,
   } from '@xyflow/svelte';
-  import { ChevronDown, Plus, Pen } from 'lucide-svelte';
+  import { ChevronDown, Plus } from 'lucide-svelte';
   import { onMount } from 'svelte';
+  import Datapoint from '../general/Datapoint.svelte';
+  import EditStepDialog from '../dialogs/EditStepDialog.svelte';
+  import DeleteStepDialog from '../dialogs/DeleteStepDialog.svelte';
+  import AddDatapointDialog from '../dialogs/AddDatapointDialog.svelte';
 
   type $$Props = NodeProps;
 
@@ -42,8 +46,10 @@
 
   let foldStep = false;
   let foldDatapoint = false;
-
   let node: any;
+  let editDialog: HTMLDialogElement;
+  let deleteDialog: HTMLDialogElement;
+  let addDatapointDialog: HTMLDialogElement;
 
   onMount(() => {
     node.addEventListener('click', (event: PointerEvent) => {
@@ -64,17 +70,41 @@
     foldDatapoint = !foldDatapoint;
   }
 
+  function editStep() {
+    editDialog.showModal();
+  }
+
+  function deleteStep() {
+    deleteDialog.showModal();
+  }
+
+  function addDatapoint() {
+    addDatapointDialog.showModal();
+  }
+
+  function zoomIn() {
+    fitView({ nodes: [{ id: id }], duration: 600, padding: 1 });
+  }
+
   // $: if (selected) fitView({ nodes: [{ id: id }], duration: 600, padding: 1 });
 </script>
 
+{#if data}
+  <EditStepDialog bind:editDialog step={data} />
+  <DeleteStepDialog bind:deleteDialog step={data} />
+  <AddDatapointDialog bind:addDatapointDialog step={data} />
+{/if}
+
 <NodeToolbar position={Position.Top} align={'start'}>
   <div class="toolbar__container">
-    <button class="toolbar__button">edit</button>
-    <button class="toolbar__button">delete</button>
+    <button class="toolbar__button" on:click={editStep}>edit</button>
+    <button class="toolbar__button" on:click={deleteStep}>delete</button>
   </div>
 </NodeToolbar>
+<!-- svelte-ignore a11y-no-static-element-interactions -->
 <div
   bind:this={node}
+  on:dblclick={zoomIn}
   class="container"
   style={selected ? 'outline: 2px solid #555555' : 'border:none'}
 >
@@ -117,7 +147,7 @@
       <div class="datapoints__header">
         <div class="datapoints__title__container">
           <h2 class="subtitle">Datapoints</h2>
-          <button class="body__button">
+          <button class="body__button" on:click={addDatapoint}>
             <Plus size="16" />
           </button>
         </div>
@@ -130,7 +160,15 @@
           />
         </button>
       </div>
-      <div style={foldDatapoint ? 'display: none' : ''}>none, for now</div>
+      <div style={foldDatapoint ? 'display: none' : ''}>
+        {#if data.datapoints.length > 0}
+          {#each data.datapoints as datapoint, i}
+            <Datapoint {datapoint} step={data} />
+          {/each}
+        {:else}
+          none, for now
+        {/if}
+      </div>
     </div>
   </div>
 </div>
