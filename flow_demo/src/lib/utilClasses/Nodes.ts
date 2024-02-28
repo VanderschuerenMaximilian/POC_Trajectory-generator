@@ -1,3 +1,6 @@
+import type { IStepNode } from "$lib/components/nodes/types";
+import type { IDatapoint, IEvent, IPhase, IStep, ITrajectory } from "$lib/components/types";
+//@ts-ignore
 import { type XYPosition, type Node, type Edge, Position } from "@xyflow/svelte";
 
 const nodeConfig = { targetPosition: Position.Left, sourcePosition: Position.Right }
@@ -5,10 +8,24 @@ let count: number = 0;
 
 export default class Extraction {
     position: XYPosition = { x: 0, y: 0 };
+    // for full trajectory
+    nodes: Node[] = [];
+    edges: Edge[] = [];
+    // for header trajectory
     steps: Node[] = [];
     options: Node[] = [];
     stepsEdges: Edge[] = [];
     optionsEdges: Edge[] = [];
+
+    async extractFullTrajectory(trajectory: ITrajectory, items: (IPhase|IEvent)[]): Promise<{ nodes: Node[]; edges: Edge[]}> {
+        this.reset()
+        const { id: trajectoryId, version, episode_object } = trajectory
+        const specifics = { id: trajectoryId, version, episode_object } 
+        const node = await this.assembleNode('trajectoryNode', specifics)
+        this.nodes = [...this.nodes, node]
+        for (const step of items) await this.extractNodes(step, node.id)
+        return { nodes: this.nodes, edges: this.edges }
+    }
 
     async extractSteps(steps: any) {
         this.reset()
@@ -20,6 +37,74 @@ export default class Extraction {
         this.reset()
         for (const option of options) await this.assembleFlow('event', option)
     }
+
+    // functions for full trajectory 
+
+    private async extractNodes(item: IEvent | IPhase, parentId: string) {
+        if (item.type === 'event') return await this.extractFromEvent(item as IEvent, parentId)
+        else return await this.extractFromPhase(item as IPhase, parentId)
+    }
+
+    private async extractFromEvent(event: IEvent, parentId: string) {
+        // TODO: make event node interface
+        const specificInfo: any = { event }
+        const id = this.assembleNodeAndReturnId('eventNode', specificInfo)
+        this.assembleEdge(parentId, id)
+        // for (const opt of event.options) await this.extractFromOption(opt, color, id, event.name)
+    }
+
+    private async extractFromPhase(phase: IPhase, parentId: string) {
+        // TODO: make phase node interface
+        const specificInfo: any = { phase }
+        const id = this.assembleNodeAndReturnId('phaseNode', specificInfo)
+        this.assembleEdge(parentId, id)
+        for (const step of phase.steps) await this.extractFromStep(step, id, phase.name)
+    }
+
+    private async extractFromStep(step: IStep, parentId: string, phaseName: string) {
+        // TODO: make step node interface
+        const specificInfo: any = { step, phaseName }
+        const id = this.assembleNodeAndReturnId('stepNode', specificInfo)
+        this.assembleEdge(parentId, id)
+        for (const datapoint of step.datapoints) await this.extractFromDatapoint(datapoint, id, phaseName, step.name)
+    }
+
+    private async extractFromDatapoint(
+        dp: IDatapoint,
+        parentId: string,
+        phaseName: string,
+        stepName: string
+    ) {
+        // TODO: make datapointlocation interface
+        const location: any = { phaseName, stepName, datapoint: dp, type: 'datapoint' }
+        // TODO: make datapoint node interface
+        const specificInfo: any = { datapoint: dp, location }
+        const id = this.assembleNodeAndReturnId('datapointNode', specificInfo)
+        this.assembleEdge(parentId, id)
+    }
+
+    private getNodeId(): string {
+        count++
+        return count.toString()
+    }
+
+    private assembleNodeAndReturnId(type: string, specifics: object): string {
+        const id = this.getNodeId()
+        const baseConfig = { id, type, position: this.position }
+        this.changePosition()
+        const node: Node = { ...baseConfig, ...{ data: specifics }, ...nodeConfig }
+        this.nodes = [...this.nodes, node]
+        return id
+    }
+
+    private assembleEdge(parentId: string, id: string): void {
+        const edge: Edge = { id: crypto.randomUUID(), source: parentId, target: id }
+        this.edges = [...this.edges, edge]
+    }
+
+    // end of functions for full trajectory
+
+    // functions for header trajectory
 
     private async assembleFlow(type: any, item: any) {
         if (type === 'phase') {
@@ -75,8 +160,12 @@ export default class Extraction {
         this.stepsEdges = [...this.stepsEdges, edge]
     }
 
+    // end of functions for header trajectory
+
     private reset(): void {
         this.position = { x: 0, y: 0 };
+        this.nodes = [];
+        this.edges = [];
         this.steps = [];
         this.options = [];
         this.stepsEdges = [];

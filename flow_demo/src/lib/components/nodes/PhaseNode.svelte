@@ -35,6 +35,6 @@
 </script>
 
 <div>
-    <h1>StepNode</h1>
+    <h1>PhaseNode</h1>
     <p>{data}</p>
 </div>

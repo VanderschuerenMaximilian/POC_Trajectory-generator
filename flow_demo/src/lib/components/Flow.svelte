@@ -21,17 +21,17 @@
   import ImportantNode from './nodes/ImportantNode.svelte';
   import { onMount } from 'svelte';
   import Extraction from '$lib/utilClasses/Nodes';
-  import StepNode from './nodes/StepNode.svelte';
   import TrajectroyPanel from './general/TrajectroyPanel.svelte';
   import type { ITrajectory } from './types';
+  import OwnStepNode from './nodes/OwnStepNode.svelte';
 
   const extraction = new Extraction();
   const snapGrid: [number, number] = [25, 25];
   const nodeTypes: NodeTypes = {
-    colorPicker: ColorPickerNode,
-    mainNode: MainNode,
-    importantNode: ImportantNode,
-    stepNode: StepNode,
+    // colorPicker: ColorPickerNode,
+    // mainNode: MainNode,
+    // importantNode: ImportantNode,
+    stepNode: OwnStepNode,
   };
 
   let items: any = [];
@@ -60,16 +60,21 @@
   $: getChildren($activeItem);
 </script>
 
-<SvelteFlow
-  {nodes}
-  {edges}
-  {nodeTypes}
-  {snapGrid}
-  fitView={true}
-  on:nodeclick={(e) => console.log(e.detail.node)}
->
+<SvelteFlow {nodes} {edges} {nodeTypes} {snapGrid} fitView={true}>
+  <!-- on:nodeclick={(e) => console.log(e.detail.node)} -->
   <Controls />
   <Background gap={[20, 20]} variant={BackgroundVariant.Dots} />
-  <TrajectroyPanel {trajectory} />
+  <!-- <TrajectroyPanel {trajectory} /> -->
+  <!-- <MiniMap
+    width={1000}
+    position={'top-center'}
+    nodeColor={(n) => {
+      if (n.type === 'stepNode') return 'rgba(0, 150, 0, 0.75)';
+      else if (n.type === 'event') return 'blue';
+      else return 'red';
+    }}
+    zoomable={true}
+    pannable={true}
+  /> -->
   <MiniMap />
 </SvelteFlow>
