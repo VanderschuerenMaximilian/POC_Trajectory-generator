@@ -13,7 +13,6 @@
     MiniMap,
     type NodeTypes,
     type Edge,
-    // @ts-ignore
   } from '@xyflow/svelte';
   // 👇 this is important! You need to import the styles for Svelte Flow to work
   import '@xyflow/svelte/dist/style.css';
@@ -52,13 +51,6 @@
     $edgesStore = flatEdges;
   }
 
-  function assignColorToNode(type: string) {
-    if (type === 'trajectoryNode') return 'rgba(0, 150, 0, 0.75)';
-    else if (type === 'phaseNode') return 'blue';
-    else if (type === 'eventNode') return 'red';
-    else if (type === 'stepNode') return 'hotpink';
-    else if (type === 'datapointNode') return 'yellow';
-  }
   $: trajectory = $trajectoryStore;
   $: items = $itemsStore;
   $: if (trajectory && items) init();
@@ -82,8 +74,11 @@
       else if (n.type === 'eventNode') return 'red';
       else if (n.type === 'stepNode') return 'hotpink';
       else if (n.type === 'datapointNode') return 'yellow';
+      return 'black';
     }}
     zoomable={true}
+    zoomStep={20}
     pannable={true}
+    ariaLabel={'Mini map of the flow diagram.'}
   />
 </SvelteFlow>

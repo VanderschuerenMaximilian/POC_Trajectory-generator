@@ -1,6 +1,5 @@
 import type { IStepNode } from "$lib/components/nodes/types";
 import type { IDatapoint, IEvent, IPhase, IStep, ITrajectory } from "$lib/components/types";
-//@ts-ignore
 import { type XYPosition, type Node, type Edge, Position } from "@xyflow/svelte";
 
 const nodeConfig = { targetPosition: Position.Left, sourcePosition: Position.Right }
@@ -90,8 +89,8 @@ export default class Extraction {
 
     private assembleNodeAndReturnId(type: string, specifics: object): string {
         const id = this.getNodeId()
+        this.changePositionFullTrajectory(type)
         const baseConfig = { id, type, position: this.position }
-        this.changePosition()
         const node: Node = { ...baseConfig, ...{ data: specifics }, ...nodeConfig }
         this.nodes = [...this.nodes, node]
         return id
@@ -152,6 +151,16 @@ export default class Extraction {
         if (this.position.x > 1000) this.position = { x: 0, y: this.position.y + 350 }
         else {
             this.position = { x: this.position.x + 350, y: this.position.y }
+        }
+    }
+
+    private async changePositionFullTrajectory(type: string) {
+        if (type === 'phaseNode' || type === 'eventNode') {
+            this.position = { x: this.position.x + 350, y: 350 }
+        } else if (type === 'stepNode') {
+            this.position = { x: this.position.x + 350, y: 700 }
+        } else if (type === 'datapointNode') {
+            this.position = { x: this.position.x + 350, y: 1050 }
         }
     }
 
