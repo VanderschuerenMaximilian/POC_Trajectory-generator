@@ -14,7 +14,6 @@
   import DeleteStepDialog from '../dialogs/DeleteStepDialog.svelte';
   import AddDatapointDialog from '../dialogs/AddDatapointDialog.svelte';
   import type { IStepNode } from './types';
-  import { nodes as nodesStore, edges as edgesStore, edges } from '$lib/store';
 
   type $$Props = NodeProps;
 

@@ -25,6 +25,7 @@
   import TrajectroyPanel from './general/TrajectroyPanel.svelte';
   import type { ITrajectory } from './types';
   import OwnStepNode from './nodes/OwnStepNode.svelte';
+  import DragAndDropMenu from './general/DragAndDropMenu.svelte';
 
   const extraction = new Extraction();
   const snapGrid: [number, number] = [25, 25];
@@ -60,39 +61,75 @@
     }
   }
 
-  function handleEdgeDrop(event: MouseEvent | TouchEvent) {
-    if (!connectingId) return;
-    const targetIsPane = (event.target as Element).classList.contains(
-      'svelte-flow__pane'
-    );
-    if (targetIsPane) {
-      const newNodeId = (parseInt(connectingId) + 1).toString();
-      const newNode: any = {
-        id: newNodeId,
-        type: 'stepNode',
-        data: {
-          label: `Step ${newNodeId}`,
-          description: `Step ${newNodeId}`,
-        },
-        position: screenToFlowPosition({
-          // @ts-ignore
-          x: event?.clientX,
-          // @ts-ignore
-          y: event?.clientY,
-        }),
-        origin: [0, 0],
-      };
-      $nodesStore.push(newNode);
-      $edgesStore.push({
-        id: crypto.randomUUID(),
-        source: connectingId,
-        target: newNodeId,
-      });
+  function onEdgeDrop(event: any) {}
 
-      $nodesStore = [...$nodesStore];
-      $edgesStore = [...$edgesStore];
+  // function onEdgeDrop(event: MouseEvent | TouchEvent) {
+  //   if (!connectingId) return;
+  //   const targetIsPane = (event.target as Element).classList.contains(
+  //     'svelte-flow__pane'
+  //   );
+  //   if (targetIsPane) {
+  //     const newNodeId = (parseInt(connectingId) + 1).toString();
+  //     const newNode: any = {
+  //       id: newNodeId,
+  //       type: 'stepNode',
+  //       data: {
+  //         label: `Step ${newNodeId}`,
+  //         description: `Step ${newNodeId}`,
+  //       },
+  //       position: screenToFlowPosition({
+  //         // @ts-ignore
+  //         x: event?.clientX,
+  //         // @ts-ignore
+  //         y: event?.clientY,
+  //       }),
+  //       origin: [0, 0],
+  //     };
+  //     $nodesStore.push(newNode);
+  //     $edgesStore.push({
+  //       id: crypto.randomUUID(),
+  //       source: connectingId,
+  //       target: newNodeId,
+  //     });
+
+  //     $nodesStore = [...$nodesStore];
+  //     $edgesStore = [...$edgesStore];
+  //   }
+  // }
+
+  function onDragOver(event: DragEvent) {
+    event.preventDefault();
+
+    if (event.dataTransfer) {
+      event.dataTransfer.dropEffect = 'move';
     }
   }
+
+  function onDrop (event: DragEvent) {
+    event.preventDefault();
+
+    if (!event.dataTransfer) {
+      return null;
+    }
+
+    const type = event.dataTransfer.getData('application/svelteflow');
+
+    const position = screenToFlowPosition({
+      x: event.clientX,
+      y: event.clientY,
+    });
+
+    const newNode: any = {
+      id: `${$nodesStore.length + 1}`,
+      type,
+      position,
+      data: { label: `StepNode ${$nodesStore.length + 1}` },
+      origin: [0, 0],
+    };
+
+    $nodesStore.push(newNode);
+    $nodesStore = [...$nodesStore];
+  };
 
   $: getChildren($activeItem);
 </script>
@@ -106,12 +143,14 @@
   onconnectstart={(_, { nodeId }) => {
     if (nodeId) connectingId = nodeId;
   }}
-  onconnectend={handleEdgeDrop}
+  onconnectend={onEdgeDrop}
+  on:dragover={onDragOver}
+  on:drop={onDrop}
 >
   <!-- on:nodeclick={(e) => console.log(e.detail.node)} -->
   <Controls />
   <Background gap={[20, 20]} variant={BackgroundVariant.Dots} />
-  <!-- <TrajectroyPanel {trajectory} /> -->
-
+  <TrajectroyPanel {trajectory} />
+  <DragAndDropMenu />
   <MiniMap />
 </SvelteFlow>
