@@ -1,7 +1,7 @@
 <script lang="ts">
   import {
-    nodes,
-    edges,
+    nodes as nodesStore,
+    edges as edgesStore,
     activeItem,
     items as itemsStore,
     trajectory as trajectoryStore,
@@ -13,6 +13,7 @@
     BackgroundVariant,
     MiniMap,
     type NodeTypes,
+    useSvelteFlow,
   } from '@xyflow/svelte';
   // 👇 this is important! You need to import the styles for Svelte Flow to work
   import '@xyflow/svelte/dist/style.css';
@@ -34,8 +35,10 @@
     stepNode: OwnStepNode,
   };
 
+  const { screenToFlowPosition } = useSvelteFlow();
   let items: any = [];
   let trajectory: ITrajectory;
+  let connectingId: string;
 
   onMount(async () => {
     items = $itemsStore;
@@ -48,33 +51,67 @@
       const { steps, stepsEdges } = await extraction.extractSteps(
         parentNode.steps
       );
-      $nodes = steps;
-      $edges = stepsEdges;
+      $nodesStore = steps;
+      $edgesStore = stepsEdges;
     } else if (parentNode.type === 'event') {
       extraction.extractOptions(parentNode.options);
-      $nodes = [];
-      $edges = [];
+      $nodesStore = [];
+      $edgesStore = [];
+    }
+  }
+
+  function handleEdgeDrop(event: MouseEvent | TouchEvent) {
+    if (!connectingId) return;
+    const targetIsPane = (event.target as Element).classList.contains(
+      'svelte-flow__pane'
+    );
+    if (targetIsPane) {
+      const newNodeId = (parseInt(connectingId) + 1).toString();
+      const newNode: any = {
+        id: newNodeId,
+        type: 'stepNode',
+        data: {
+          label: `Step ${newNodeId}`,
+          description: `Step ${newNodeId}`,
+        },
+        position: screenToFlowPosition({
+          // @ts-ignore
+          x: event?.clientX,
+          // @ts-ignore
+          y: event?.clientY,
+        }),
+        origin: [0, 0],
+      };
+      $nodesStore.push(newNode);
+      $edgesStore.push({
+        id: crypto.randomUUID(),
+        source: connectingId,
+        target: newNodeId,
+      });
+
+      $nodesStore = [...$nodesStore];
+      $edgesStore = [...$edgesStore];
     }
   }
 
   $: getChildren($activeItem);
 </script>
 
-<SvelteFlow {nodes} {edges} {nodeTypes} {snapGrid} fitView={true}>
+<SvelteFlow
+  nodes={nodesStore}
+  edges={edgesStore}
+  {nodeTypes}
+  {snapGrid}
+  fitView={true}
+  onconnectstart={(_, { nodeId }) => {
+    if (nodeId) connectingId = nodeId;
+  }}
+  onconnectend={handleEdgeDrop}
+>
   <!-- on:nodeclick={(e) => console.log(e.detail.node)} -->
   <Controls />
   <Background gap={[20, 20]} variant={BackgroundVariant.Dots} />
   <!-- <TrajectroyPanel {trajectory} /> -->
-  <!-- <MiniMap
-    width={1000}
-    position={'top-center'}
-    nodeColor={(n) => {
-      if (n.type === 'stepNode') return 'rgba(0, 150, 0, 0.75)';
-      else if (n.type === 'event') return 'blue';
-      else return 'red';
-    }}
-    zoomable={true}
-    pannable={true}
-  /> -->
+
   <MiniMap />
 </SvelteFlow>

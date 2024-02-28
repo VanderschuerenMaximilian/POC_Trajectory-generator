@@ -5,7 +5,6 @@
     Position,
     useSvelteFlow,
     Handle,
-    NodeResizer,
     NodeResizeControl,
   } from '@xyflow/svelte';
   import { ChevronDown, Plus } from 'lucide-svelte';
@@ -15,6 +14,7 @@
   import DeleteStepDialog from '../dialogs/DeleteStepDialog.svelte';
   import AddDatapointDialog from '../dialogs/AddDatapointDialog.svelte';
   import type { IStepNode } from './types';
+  import { nodes as nodesStore, edges as edgesStore, edges } from '$lib/store';
 
   type $$Props = NodeProps;
 
@@ -194,12 +194,12 @@
         </button>
       </div>
       <div style={foldDatapoint ? 'display: none' : ''}>
-        {#if data.datapoints.length > 0}
-          {#each data.datapoints as datapoint, i}
+        {#if data.datapoints && data?.datapoints.length > 0}
+          {#each data?.datapoints as datapoint, i}
             <Datapoint {datapoint} step={data} />
           {/each}
         {:else}
-          none, for now
+          There are no datapoints.
         {/if}
       </div>
     </div>
