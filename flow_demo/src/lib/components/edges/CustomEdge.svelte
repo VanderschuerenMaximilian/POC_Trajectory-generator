@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
   import {
     BaseEdge,
     getBezierPath,
@@ -28,7 +28,7 @@
     "
     class="nodrag nopan"
   >
-    <!-- {data.label} -->
+    {data.label}
     Edge Text
   </div>
-</EdgeLabelRenderer>
+</EdgeLabelRenderer> -->

@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
   import { Handle, Position, type NodeProps } from '@xyflow/svelte';
   import { nodes } from '$lib/store';
 
@@ -132,4 +132,4 @@
     margin: 0;
     font-size: 1rem;
   }
-</style>
+</style> -->

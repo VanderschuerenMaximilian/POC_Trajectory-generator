@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
   import {
     Handle,
     Position,
@@ -93,4 +93,4 @@
     background: #a0a0a0;
     transition-duration: 0.2s;
   }
-</style>
+</style> -->

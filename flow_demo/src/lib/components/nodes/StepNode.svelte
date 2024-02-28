@@ -5,6 +5,8 @@
     Position,
     useSvelteFlow,
     Handle,
+    NodeResizer,
+    NodeResizeControl,
   } from '@xyflow/svelte';
   import { ChevronDown, Plus } from 'lucide-svelte';
   import { onMount } from 'svelte';
@@ -52,9 +54,13 @@
   let editDialog: HTMLDialogElement;
   let deleteDialog: HTMLDialogElement;
   let addDatapointDialog: HTMLDialogElement;
+  let initalWidth: number;
+  let initialHeight: number;
 
-  onMount(async () => {
-    await assignKeyboardFeatures();
+  onMount(() => {
+    assignKeyboardFeatures();
+    if (node)
+      (initalWidth = node.clientWidth), (initialHeight = node.clientHeight);
   });
 
   const { fitView } = useSvelteFlow();
@@ -85,7 +91,7 @@
 
   function assignKeyboardFeatures() {
     node.addEventListener('click', (event: PointerEvent) => {
-      if (event.altKey) {
+      if (event?.altKey) {
         zoomIn();
       }
     });
@@ -104,12 +110,32 @@
     <button class="toolbar__button" on:click={deleteStep}>delete</button>
   </div>
 </NodeToolbar>
+<!-- TODO: make this responsive in another way -->
+{#key initalWidth || initialHeight}
+  <!-- <NodeResizer
+    minWidth={initalWidth}
+    minHeight={initialHeight}
+    maxWidth={300}
+    isVisible={selected}
+    keepAspectRatio={false}
+  /> -->
+  {#if selected}
+    <NodeResizeControl
+      nodeId={id}
+      minWidth={initalWidth}
+      minHeight={initialHeight}
+      position="bottom-right"
+      style="width: 10px; height: 10px; background-color: #000000; cursor: nwse-resize; border-radius: 2px;
+      transform: translate(3px)"
+    />
+  {/if}
+{/key}
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <div
   bind:this={node}
   on:dblclick={zoomIn}
   class="container"
-  style={selected ? 'outline: 2px solid #555555' : 'border:none'}
+  style={selected ? 'outline: 2px solid #555555' : 'outline:none'}
 >
   {#if id !== '0'}
     <Handle id="left" type="target" position={Position.Left} />
@@ -204,6 +230,10 @@
     font-weight: 500;
   }
 
+  p {
+    max-width: 200px;
+  }
+
   .header__button:hover {
     background-color: #8d8d8d;
   }
@@ -216,14 +246,15 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    max-width: 260px;
-    min-width: 220px;
+    /* justify-content: space-between; */
+    /* max-width: 340px; */
+    /* min-width: 220px; */
     background-color: #d9d9d9;
     border-radius: 15px;
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
     overflow: hidden;
     padding-bottom: 12px;
+    height: 95%;
   }
 
   .header {
@@ -264,7 +295,7 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    /* justify-content: start; */
     gap: 1rem;
   }
 

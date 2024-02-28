@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
   import {
     Handle,
     Position,
@@ -114,18 +114,17 @@
   //   function showIncomers() {
   //     console.log(incomers);
   //   }
-</script>
+</script> -->
 
 <!-- CAREFUL: When using multiple "target" handles, after you to connected to either handle, 
 the edge will automatically to the heigest "target" handle. -->
 
-<NodeResizer minHeight={47} isVisible={selected} />
+<!-- <NodeResizer minHeight={47} isVisible={selected} />
 <div class="colorpicker" style="background-color: {$color};">
   <NodeToolbar position={Position.Top} align={'start'}>
     <button>delete</button>
     <button>edit</button>
   </NodeToolbar>
-  <!-- {JSON.stringify($info[1])} -->
   <Handle
     id="left-handle"
     type="target"
@@ -173,4 +172,4 @@ the edge will automatically to the heigest "target" handle. -->
   .nodrag {
     user-select: none;
   }
-</style>
+</style> -->
