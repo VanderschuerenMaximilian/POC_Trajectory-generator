@@ -17,9 +17,6 @@
   } from '@xyflow/svelte';
   // 👇 this is important! You need to import the styles for Svelte Flow to work
   import '@xyflow/svelte/dist/style.css';
-  import ColorPickerNode from '$lib/components/nodes/ColorPickerNode.svelte';
-  import MainNode from './nodes/MainNode.svelte';
-  import ImportantNode from './nodes/ImportantNode.svelte';
   import { onMount } from 'svelte';
   import Extraction from '$lib/utilClasses/Nodes';
   import TrajectroyPanel from './general/TrajectroyPanel.svelte';
@@ -30,9 +27,6 @@
   const extraction = new Extraction();
   const snapGrid: [number, number] = [25, 25];
   const nodeTypes: NodeTypes = {
-    // colorPicker: ColorPickerNode,
-    // mainNode: MainNode,
-    // importantNode: ImportantNode,
     stepNode: OwnStepNode,
   };
 
