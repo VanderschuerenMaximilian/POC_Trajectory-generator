@@ -4,6 +4,7 @@
     edges as edgesStore,
     items as itemsStore,
     trajectory as trajectoryStore,
+    nodes,
   } from '$lib/store';
   import {
     SvelteFlow,
@@ -17,7 +18,6 @@
   } from '@xyflow/svelte';
   // 👇 this is important! You need to import the styles for Svelte Flow to work
   import '@xyflow/svelte/dist/style.css';
-  import { onMount } from 'svelte';
   import Extraction from '$lib/utilClasses/Nodes';
   import StepNode from './nodes/StepNode.svelte';
   import type { ITrajectory } from './types';
@@ -27,15 +27,17 @@
   import DatapointNode from './nodes/DatapointNode.svelte';
   import ELK, { type ElkExtendedEdge, type ElkNode, type LayoutOptions } from 'elkjs';
   import { flattenArray } from '$lib/utils';
+  import NodeOptions from './nodes/Node';
 
   const elk = new ELK()
   const elkOptions: LayoutOptions = {
     'elk.algorithm': 'mrtree',
     'elk.layered.spacing.nodeNodeBetweenLayers': '80',
-    'elk.spacing.nodeNode': '200',
+    'elk.spacing.nodeNode': '480',
     'elk.direction': 'DOWN',
   }
   const extraction = new Extraction();
+  const nodeOptions = new NodeOptions();
   const snapGrid: [number, number] = [25, 25];
   const nodeTypes: NodeTypes = {
     trajectoryNode: TrajectoryNode,
@@ -105,12 +107,13 @@
     width={1000}
     position={'top-center'}
     nodeColor={(n) => {
-      if (n.type === 'trajectoryNode') return 'rgba(0, 150, 0, 0.75)';
-      else if (n.type === 'phaseNode') return 'crimson';
-      else if (n.type === 'eventNode') return '#62caed';
-      else if (n.type === 'stepNode') return 'hotpink';
-      else if (n.type === 'datapointNode') return 'yellow';
-      return 'black';
+      if (n.type === 'trajectoryNode') return nodeOptions.colors.trajectory;
+      else if (n.type === 'phaseNode') return nodeOptions.colors.phase;
+      else if (n.type === 'eventNode') return nodeOptions.colors.event;
+      else if (n.type === 'stepNode') return nodeOptions.colors.step;
+      else if (n.type === 'optionNode') return nodeOptions.colors.option;
+      else if (n.type === 'datapointNode') return nodeOptions.colors.datapoint;
+      else return 'black';
     }}
     zoomable={true}
     zoomStep={20}

@@ -4,10 +4,10 @@
   import { SvelteFlowProvider } from '@xyflow/svelte';
   import { onMount } from 'svelte';
   import IDBJson from '$lib/data/IBD_Crohn_Disease.json';
+  import Dummy from '$lib/data/dummy.json';
   import {
     trajectory as trajectoryStore,
     items as itemsStore,
-    activeItem,
   } from '$lib/store';
   import type { IPhase, IEvent } from '$lib/components/types';
   import JsonExtraction from '$lib/utilClasses/Json';
@@ -18,7 +18,7 @@
 
   onMount(async () => {
     const { trajectory: trajectoryObj, items: PhasesAndEvents } =
-      await extraction.getTrajectory(IDBJson);
+      await extraction.getTrajectory(Dummy);
 
     trajectoryStore.set(trajectoryObj);
     itemsStore.set(PhasesAndEvents);

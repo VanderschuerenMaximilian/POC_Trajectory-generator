@@ -1,0 +1,49 @@
+{"trajectory":
+    {
+        "id":1,
+        "version_number":"1",
+        "episode_object": {
+            "name":"IBD: ziekte van Crohn",
+            "description":"Inflammatory Bowel Disease: ziekte van Crohn",
+            "concept": {
+                "domain_name":"Condition"
+            }
+        },
+        "items": [
+            {
+                "name": "history",
+                "type": "phase",
+                "steps": []
+            },
+            {
+                "name": "trigger",
+                "type": "event",
+                "options": []
+            },
+            {
+                "name": "diagnostic",
+                "type": "phase",
+                "steps": []
+            },
+            {
+                "name": "diagnose",
+                "type": "event",
+                "option": []
+            },
+            {
+                "name": "treatment",
+                "type": "phase",
+                "steps": []
+            },
+            {
+                "name": "outcome",
+                "type": "event",
+                "option": []
+            },
+            {
+                "name": "follow-up",
+                "type": "phase",
+                "steps": []
+            }
+        ]
+}}
