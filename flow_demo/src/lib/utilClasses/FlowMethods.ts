@@ -5,7 +5,6 @@ const MIN_DISTANCE: number = 550;
 export default class FlowMethods {
     onEdgeDrop(event: MouseEvent | TouchEvent, connectingId: string, screenToFlowPosition: Function) {
         if (!connectingId) return;
-        // const { screenToFlowPosition } = useSvelteFlow();
         const targetIsPane = (event.target as Element).classList.contains(
         'svelte-flow__pane'
         );
@@ -31,6 +30,7 @@ export default class FlowMethods {
             id: crypto.randomUUID(),
             source: connectingId,
             target: newNodeId,
+            type: 'step',
         };
 
         return { newNode, newEdge };

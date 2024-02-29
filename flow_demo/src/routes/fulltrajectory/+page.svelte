@@ -17,11 +17,10 @@
   let items: (IPhase | IEvent)[] = [];
 
   onMount(async () => {
-    const { trajectory: trajectoryObj, items: PhasesAndEvents } =
-      await extraction.getTrajectory(IDBJson);
+    const { trajectory: trajectoryObj, items: PhasesAndEvents } = await extraction.getTrajectory(IDBJson);
 
-    trajectoryStore.set(trajectoryObj);
-    itemsStore.set(PhasesAndEvents);
+    $trajectoryStore = trajectoryObj;
+    $itemsStore = PhasesAndEvents;
     items = PhasesAndEvents;
   });
 </script>
