@@ -54,7 +54,8 @@ export default class Extraction {
 
     private async extractFromPhase(phase: IPhase, parentId: string) {
         // TODO: make phase node interface
-        const specificInfo: any = { phase }
+        // TODO: make that the phase node and all the others nodes dont have big data arrays that they will not use
+        const specificInfo: any = { phase: { name: phase.name, type: phase.type } }
         const id = this.assembleNodeAndReturnId('phaseNode', specificInfo)
         this.assembleEdge(parentId, id)
         for (const step of phase.steps) await this.extractFromStep(step, id, phase.name)

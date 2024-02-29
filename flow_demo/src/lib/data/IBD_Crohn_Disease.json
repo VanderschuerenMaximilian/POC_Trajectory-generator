@@ -332,7 +332,13 @@
             "name":"diagnose",
             "type":"event",
             "options":[
-               
+                {
+                    "name": "Dummy option 1",
+                    "description": "Dummy option 1",
+                    "concept": {
+                        "domain_name": "Condition"
+                    }
+                }
             ]
          },
          {
@@ -834,7 +840,13 @@
             "name":"outcome",
             "type":"event",
             "options":[
-               
+                {
+                    "name": "Dummy option 1",
+                    "description": "Dummy option 1",
+                    "concept": {
+                        "domain_name": "Condition"
+                    }
+                }   
             ]
          },
          {
