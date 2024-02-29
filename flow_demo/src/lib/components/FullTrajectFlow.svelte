@@ -15,6 +15,7 @@
     type NodeTypes,
     type Edge,
     type Node,
+    ConnectionLineType,
   } from '@xyflow/svelte';
   // 👇 this is important! You need to import the styles for Svelte Flow to work
   import '@xyflow/svelte/dist/style.css';
@@ -25,17 +26,22 @@
   import PhaseNode from './nodes/PhaseNode.svelte';
   import EventNode from './nodes/EventNode.svelte';
   import DatapointNode from './nodes/DatapointNode.svelte';
-  import ELK, { type ElkExtendedEdge, type ElkNode, type LayoutOptions } from 'elkjs';
+  import OptionNode from './nodes/OptionNode.svelte';
+  import ELK, {
+    type ElkExtendedEdge,
+    type ElkNode,
+    type LayoutOptions,
+  } from 'elkjs';
   import { flattenArray } from '$lib/utils';
   import NodeOptions from './nodes/Node';
 
-  const elk = new ELK()
+  const elk = new ELK();
   const elkOptions: LayoutOptions = {
     'elk.algorithm': 'mrtree',
-    'elk.layered.spacing.nodeNodeBetweenLayers': '80',
-    'elk.spacing.nodeNode': '480',
+    // 'elk.layered.spacing.nodeNodeBetweenLayers': '80',
+    'elk.spacing.nodeNode': '280',
     'elk.direction': 'DOWN',
-  }
+  };
   const extraction = new Extraction();
   const nodeOptions = new NodeOptions();
   const snapGrid: [number, number] = [25, 25];
@@ -45,6 +51,7 @@
     eventNode: EventNode,
     stepNode: StepNode,
     datapointNode: DatapointNode,
+    optionNode: OptionNode,
   };
 
   async function getElementsLayout(
@@ -52,31 +59,40 @@
     edges: Edge[],
     options: LayoutOptions
   ): Promise<{ nodes: ElkNode[]; edges: ElkExtendedEdge[] }> {
-    const transformedNodes = nodes.map(node => ({
+    const transformedNodes = nodes.map((node) => ({
       ...node,
       children: node.data.children ?? [],
       layoutOptions: options,
-    }))
-    const graph = { id: 'root', layoutOptions: options, children: transformedNodes, edges }
+    }));
+    const graph = {
+      id: 'root',
+      layoutOptions: options,
+      children: transformedNodes,
+      edges,
+    };
     // @ts-expect-error This is a Typescript error in the ElkJS & Svelte-flow package, the types don't match but work together
-    const elkGraph = await elk.layout(graph)
-    const elkChildren = elkGraph.children ?? []
-    const flattenedArray = flattenArray(elkChildren, 'children').map((node: ElkNode) => ({
-      ...node,
-      position: { x: node.x, y: node.y },
-    }))
+    const elkGraph = await elk.layout(graph);
+    const elkChildren = elkGraph.children ?? [];
+    const flattenedArray = flattenArray(elkChildren, 'children').map(
+      (node: ElkNode) => ({
+        ...node,
+        position: { x: node.x, y: node.y },
+      })
+    );
     return {
       nodes: flattenedArray,
       edges: elkGraph.edges ?? [],
-    }
+    };
   }
 
   async function getFullTrajectoryNodes() {
-    const { nodes: flatNodes, edges: flatEdges } = await extraction.extractFullTrajectory(
-      trajectory,
-      items
+    const { nodes: flatNodes, edges: flatEdges } =
+      await extraction.extractFullTrajectory(trajectory, items);
+    const { nodes, edges } = await getElementsLayout(
+      flatNodes,
+      flatEdges,
+      elkOptions
     );
-    const { nodes, edges } = await getElementsLayout(flatNodes, flatEdges, elkOptions);
     return { nodes, edges };
   }
 
@@ -100,6 +116,7 @@
   {nodeTypes}
   {snapGrid}
   fitView={true}
+  nodesDraggable={false}
 >
   <Controls />
   <Background gap={[20, 20]} variant={BackgroundVariant.Dots} />

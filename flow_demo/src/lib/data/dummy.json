@@ -13,12 +13,45 @@
             {
                 "name": "history",
                 "type": "phase",
-                "steps": []
+                "steps": [
+                    {
+                        "datapoints": [
+                            {
+                                "name": "Datapoint 1",
+                                "description": "Datapoint 1",
+                                "concept": {
+                                    "domain_name": "Episode"
+                                },
+                                "source": {},
+                                "required": false,
+                                "date_range_before": 365,
+                                "date_range_after": 365,
+                                "catalog": {}
+                            }
+                        ],
+                        "repeat":{},
+                        "concept": {
+                            "domain_name":"Episode"
+                        },
+                        "name":"Patiëntencontext",
+                        "description":"Patiëntencontext",
+                        "date_range_before":365,
+                        "date_range_after":365
+                    }
+                ]
             },
             {
                 "name": "trigger",
                 "type": "event",
-                "options": []
+                "options": [
+                    {
+                        "name": "Dummy option 1",
+                        "description": "Dummy option 1",
+                        "concept": {
+                            "domain_name": "Condition"
+                        }
+                    }
+                ]
             },
             {
                 "name": "diagnostic",
@@ -28,7 +61,7 @@
             {
                 "name": "diagnose",
                 "type": "event",
-                "option": []
+                "options": []
             },
             {
                 "name": "treatment",
@@ -38,7 +71,7 @@
             {
                 "name": "outcome",
                 "type": "event",
-                "option": []
+                "options": []
             },
             {
                 "name": "follow-up",

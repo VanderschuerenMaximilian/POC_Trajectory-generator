@@ -18,7 +18,7 @@
 
   onMount(async () => {
     const { trajectory: trajectoryObj, items: PhasesAndEvents } =
-      await extraction.getTrajectory(Dummy);
+      await extraction.getTrajectory(IDBJson);
 
     trajectoryStore.set(trajectoryObj);
     itemsStore.set(PhasesAndEvents);

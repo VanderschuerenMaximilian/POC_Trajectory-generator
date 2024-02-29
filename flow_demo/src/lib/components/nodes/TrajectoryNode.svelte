@@ -42,7 +42,10 @@
 </script>
 
 {#if data}
-  <div class="container__node" style="background-color: {nodeOptions.colors.trajectory};">
+  <div
+    class="container__node"
+    style="background-color: {nodeOptions.colors.trajectory};"
+  >
     <h1>{name}</h1>
     <p>Concept: {nodeOptions.capatalizeFirstLetter(domain)}</p>
   </div>

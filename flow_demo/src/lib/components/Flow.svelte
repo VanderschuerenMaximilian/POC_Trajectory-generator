@@ -134,7 +134,6 @@
         if (n.id !== node.id && parseInt(node.id) - 1 === parseInt(n.id)) {
           //@ts-ignore
           const dx = n.computed?.positionAbsolute.x - node.computed?.positionAbsolute.x;
-          console.log('dx: ', dx);
           const dy =
             //@ts-ignore
             n.computed?.positionAbsolute.y +
@@ -173,7 +172,6 @@
   }
 
   function onNodeDrag({ detail: { node } }: any) {
-    console.log('node: ', node);
     const closestEdge = getClosestEdge(node, $nodesStore);
 
     let edgeAlreadyExists = false;

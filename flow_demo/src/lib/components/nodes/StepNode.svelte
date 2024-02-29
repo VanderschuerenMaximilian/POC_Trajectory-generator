@@ -36,7 +36,6 @@
   export let data: any;
 
   const nodeOptions = new NodeOptions();
-  console.log(data);
   let domain = data.step.concept.domain_name;
   let name = data.step.name;
 </script>
@@ -51,3 +50,12 @@
   </div>
   <StepHandles />
 {/if}
+
+<style scoped>
+  h1 {
+    max-width: 180px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+</style>

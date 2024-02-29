@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { NodeProps } from '@xyflow/svelte';
-  import EventHandles from '../handles/EventHandles.svelte';
   import NodeOptions from './Node';
+  import OptionHandles from '../handles/OptionHandles.svelte';
 
   type $$Props = NodeProps;
 
@@ -36,23 +36,17 @@
   export let data: any;
 
   const nodeOptions = new NodeOptions();
-  let typeOfObj = data.event.type;
-  let name = data.event.name;
+  let domain = data.option.concept.domain_name;
+  let name = data.option.name;
 </script>
 
 {#if data}
   <div
-    class="container__node event"
-    style="background-color: {nodeOptions.colors.event}"
+    class="container__node"
+    style="background-color: {nodeOptions.colors.option};"
   >
     <h1>{nodeOptions.capatalizeFirstLetter(name)}</h1>
-    <p>Type: {nodeOptions.capatalizeFirstLetter(typeOfObj)}</p>
+    <p>Concept: {nodeOptions.capatalizeFirstLetter(domain)}</p>
   </div>
-  <EventHandles />
+  <OptionHandles />
 {/if}
-
-<style scoped>
-  .event {
-    border-radius: 99px;
-  }
-</style>

@@ -2,7 +2,7 @@ import type { IStepNode } from "$lib/components/nodes/types";
 import type { IDatapoint, IEvent, IPhase, IStep, ITrajectory } from "$lib/components/types";
 import { type XYPosition, type Node, type Edge, Position } from "@xyflow/svelte";
 
-const nodeConfig = { targetPosition: Position.Left, sourcePosition: Position.Right, draggable: false }
+const nodeConfig = { targetPosition: Position.Left, sourcePosition: Position.Right }
 let count: number = 0;
 
 export default class Extraction {
@@ -49,7 +49,7 @@ export default class Extraction {
         const specificInfo: any = { event }
         const id = this.assembleNodeAndReturnId('eventNode', specificInfo)
         this.assembleEdge(parentId, id)
-        // for (const opt of event.options) await this.extractFromOption(opt, color, id, event.name)
+        for (const opt of event.options) await this.extractFromOption(opt, id, event.name)
     }
 
     private async extractFromPhase(phase: IPhase, parentId: string) {
@@ -66,6 +66,13 @@ export default class Extraction {
         const id = this.assembleNodeAndReturnId('stepNode', specificInfo)
         this.assembleEdge(parentId, id)
         for (const datapoint of step.datapoints) await this.extractFromDatapoint(datapoint, id, phaseName, step.name)
+    }
+
+    private async extractFromOption(opt: any, parentId: string, eventName: string) {
+        const location: any = { eventName, option: opt, type: 'option' }
+        const specificInfo: any = { option: opt, location }
+        const id = this.assembleNodeAndReturnId('optionNode', specificInfo)
+        this.assembleEdge(parentId, id)
     }
 
     private async extractFromDatapoint(
@@ -97,7 +104,7 @@ export default class Extraction {
     }
 
     private assembleEdge(parentId: string, id: string): void {
-        const edge: Edge = { id: crypto.randomUUID(), source: parentId, target: id }
+        const edge: Edge = { id: crypto.randomUUID(), source: parentId, target: id, type: 'step'}
         this.edges = [...this.edges, edge]
     }
 

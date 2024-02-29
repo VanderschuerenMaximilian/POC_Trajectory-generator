@@ -5,7 +5,7 @@ export default class NodeOptions {
         event: '#62caed',
         step: 'hotpink',
         option: 'orange',
-        datapoint: 'yellow'
+        datapoint: '#f3ee09'
     }
     
     handleColors = {
@@ -13,8 +13,8 @@ export default class NodeOptions {
         phase: 'rgba(140, 20, 60)',
         event: 'rgba(75, 75, 255, 0.75)',
         step: 'rgba(230, 105, 180, 0.9)',
-        option: 'orange',
-        datapoint: 'yellow'
+        option: '#ff8500',
+        datapoint: '#e3e309'
     }
 
     capatalizeFirstLetter(string: string): string {
