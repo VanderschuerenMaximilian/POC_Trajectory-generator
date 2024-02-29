@@ -2,7 +2,7 @@ import type { IStepNode } from "$lib/components/nodes/types";
 import type { IDatapoint, IEvent, IPhase, IStep, ITrajectory } from "$lib/components/types";
 import { type XYPosition, type Node, type Edge, Position } from "@xyflow/svelte";
 
-const nodeConfig = { targetPosition: Position.Left, sourcePosition: Position.Right }
+const nodeConfig = { targetPosition: Position.Left, sourcePosition: Position.Right, draggable: false }
 let count: number = 0;
 
 export default class Extraction {

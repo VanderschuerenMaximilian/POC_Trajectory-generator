@@ -13,6 +13,7 @@
     MiniMap,
     type NodeTypes,
     type Edge,
+    type Node,
   } from '@xyflow/svelte';
   // 👇 this is important! You need to import the styles for Svelte Flow to work
   import '@xyflow/svelte/dist/style.css';
@@ -24,8 +25,16 @@
   import PhaseNode from './nodes/PhaseNode.svelte';
   import EventNode from './nodes/EventNode.svelte';
   import DatapointNode from './nodes/DatapointNode.svelte';
+  import ELK, { type ElkExtendedEdge, type ElkNode, type LayoutOptions } from 'elkjs';
   import { flattenArray } from '$lib/utils';
 
+  const elk = new ELK()
+  const elkOptions: LayoutOptions = {
+    'elk.algorithm': 'mrtree',
+    'elk.layered.spacing.nodeNodeBetweenLayers': '80',
+    'elk.spacing.nodeNode': '200',
+    'elk.direction': 'DOWN',
+  }
   const extraction = new Extraction();
   const snapGrid: [number, number] = [25, 25];
   const nodeTypes: NodeTypes = {
@@ -36,18 +45,45 @@
     datapointNode: DatapointNode,
   };
 
+  async function getElementsLayout(
+    nodes: Node[],
+    edges: Edge[],
+    options: LayoutOptions
+  ): Promise<{ nodes: ElkNode[]; edges: ElkExtendedEdge[] }> {
+    const transformedNodes = nodes.map(node => ({
+      ...node,
+      children: node.data.children ?? [],
+      layoutOptions: options,
+    }))
+    const graph = { id: 'root', layoutOptions: options, children: transformedNodes, edges }
+    // @ts-expect-error This is a Typescript error in the ElkJS & Svelte-flow package, the types don't match but work together
+    const elkGraph = await elk.layout(graph)
+    const elkChildren = elkGraph.children ?? []
+    const flattenedArray = flattenArray(elkChildren, 'children').map((node: ElkNode) => ({
+      ...node,
+      position: { x: node.x, y: node.y },
+    }))
+    return {
+      nodes: flattenedArray,
+      edges: elkGraph.edges ?? [],
+    }
+  }
+
   async function getFullTrajectoryNodes() {
-    const { nodes, edges } = await extraction.extractFullTrajectory(
+    const { nodes: flatNodes, edges: flatEdges } = await extraction.extractFullTrajectory(
       trajectory,
       items
     );
+    const { nodes, edges } = await getElementsLayout(flatNodes, flatEdges, elkOptions);
     return { nodes, edges };
   }
 
   async function init() {
     const { nodes: flatNodes, edges: flatEdges } =
       await getFullTrajectoryNodes();
+    // @ts-expect-error This is a Typescript error in the ElkJS & Svelte-flow package, the types don't match but work together
     $nodesStore = flatNodes;
+    // @ts-expect-error This is a Typescript error in the ElkJS & Svelte-flow package, the types don't match but work together
     $edgesStore = flatEdges;
   }
 
@@ -70,8 +106,8 @@
     position={'top-center'}
     nodeColor={(n) => {
       if (n.type === 'trajectoryNode') return 'rgba(0, 150, 0, 0.75)';
-      else if (n.type === 'phaseNode') return 'blue';
-      else if (n.type === 'eventNode') return 'red';
+      else if (n.type === 'phaseNode') return 'crimson';
+      else if (n.type === 'eventNode') return '#62caed';
       else if (n.type === 'stepNode') return 'hotpink';
       else if (n.type === 'datapointNode') return 'yellow';
       return 'black';

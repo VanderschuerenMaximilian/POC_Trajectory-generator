@@ -1,5 +1,7 @@
 <script lang="ts">
-  import type { NodeProps } from '@xyflow/svelte';
+  import { type NodeProps } from '@xyflow/svelte';
+  import TrajectoryHandle from '../handles/TrajectoryHandles.svelte';
+  import NodeOptions from './Node';
 
   type $$Props = NodeProps;
 
@@ -32,9 +34,17 @@
     undefined;
   positionAbsoluteY;
   export let data: any;
+
+  const nodeOptions = new NodeOptions();
+
+  let domain = data.episode_object.concept.domain_name;
+  let name = data.episode_object.name;
 </script>
 
-<div>
-    <h1>TrajectoryNode</h1>
-    <p>{data}</p>
-</div>
+{#if data}
+  <div class="container__node" style="background-color: {nodeOptions.colors.trajectory};">
+    <h1>{name}</h1>
+    <p>Concept: {nodeOptions.capatalizeFirstLetter(domain)}</p>
+  </div>
+  <TrajectoryHandle />
+{/if}

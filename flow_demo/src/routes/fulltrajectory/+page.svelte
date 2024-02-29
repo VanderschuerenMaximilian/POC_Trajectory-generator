@@ -11,6 +11,7 @@
   } from '$lib/store';
   import type { IPhase, IEvent } from '$lib/components/types';
   import JsonExtraction from '$lib/utilClasses/Json';
+  import '$lib/components/nodes/basicNode.css'
 
   const extraction = new JsonExtraction();
   let items: (IPhase | IEvent)[] = [];

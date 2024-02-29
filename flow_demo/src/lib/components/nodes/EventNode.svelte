@@ -1,5 +1,7 @@
 <script lang="ts">
   import type { NodeProps } from '@xyflow/svelte';
+  import EventHandles from '../handles/EventHandles.svelte';
+  import NodeOptions from './Node';
 
   type $$Props = NodeProps;
 
@@ -32,9 +34,16 @@
     undefined;
   positionAbsoluteY;
   export let data: any;
+
+  const nodeOptions = new NodeOptions();
+  let typeOfObj = data.event.type;
+  let name = data.event.name;
 </script>
 
-<div>
-    <h1>EventNode</h1>
-    <p>{data}</p>
-</div>
+{#if data}
+  <div class="container__node" style="background-color: {nodeOptions.colors.event}">
+    <h1>{nodeOptions.capatalizeFirstLetter(name)}</h1>
+    <p>Type: {nodeOptions.capatalizeFirstLetter(typeOfObj)}</p>
+  </div>
+  <EventHandles />
+{/if}

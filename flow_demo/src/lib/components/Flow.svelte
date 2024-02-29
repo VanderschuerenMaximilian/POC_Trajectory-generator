@@ -57,41 +57,41 @@
     }
   }
 
-  function onEdgeDrop(event: any) {}
+  // function onEdgeDrop(event: any) {}
 
-  // function onEdgeDrop(event: MouseEvent | TouchEvent) {
-  //   if (!connectingId) return;
-  //   const targetIsPane = (event.target as Element).classList.contains(
-  //     'svelte-flow__pane'
-  //   );
-  //   if (targetIsPane) {
-  //     const newNodeId = (parseInt(connectingId) + 1).toString();
-  //     const newNode: any = {
-  //       id: newNodeId,
-  //       type: 'stepNode',
-  //       data: {
-  //         label: `Step ${newNodeId}`,
-  //         description: `Step ${newNodeId}`,
-  //       },
-  //       position: screenToFlowPosition({
-  //         // @ts-ignore
-  //         x: event?.clientX,
-  //         // @ts-ignore
-  //         y: event?.clientY,
-  //       }),
-  //       origin: [0, 0],
-  //     };
-  //     $nodesStore.push(newNode);
-  //     $edgesStore.push({
-  //       id: crypto.randomUUID(),
-  //       source: connectingId,
-  //       target: newNodeId,
-  //     });
+  function onEdgeDrop(event: MouseEvent | TouchEvent) {
+    if (!connectingId) return;
+    const targetIsPane = (event.target as Element).classList.contains(
+      'svelte-flow__pane'
+    );
+    if (targetIsPane) {
+      const newNodeId = (parseInt(connectingId) + 1).toString();
+      const newNode: any = {
+        id: newNodeId,
+        type: 'stepNode',
+        data: {
+          label: `Step ${newNodeId}`,
+          description: `Step ${newNodeId}`,
+        },
+        position: screenToFlowPosition({
+          // @ts-ignore
+          x: event?.clientX,
+          // @ts-ignore
+          y: event?.clientY,
+        }),
+        origin: [0, 0],
+      };
+      $nodesStore.push(newNode);
+      $edgesStore.push({
+        id: crypto.randomUUID(),
+        source: connectingId,
+        target: newNodeId,
+      });
 
-  //     $nodesStore = [...$nodesStore];
-  //     $edgesStore = [...$edgesStore];
-  //   }
-  // }
+      $nodesStore = [...$nodesStore];
+      $edgesStore = [...$edgesStore];
+    }
+  }
 
   function onDragOver(event: DragEvent) {
     event.preventDefault();
