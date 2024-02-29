@@ -12,6 +12,7 @@
     Background,
     BackgroundVariant,
     MiniMap,
+    type Node,
     type NodeTypes,
     useSvelteFlow,
   } from '@xyflow/svelte';
@@ -25,12 +26,13 @@
   import DragAndDropMenu from './general/DragAndDropMenu.svelte';
 
   const extraction = new Extraction();
-  const snapGrid: [number, number] = [25, 25];
+  const snapGrid: [number, number] = [10, 10];
   const nodeTypes: NodeTypes = {
     stepNode: OwnStepNode,
   };
 
   const { screenToFlowPosition } = useSvelteFlow();
+  let MIN_DISTANCE: number = 550;
   let items: any = [];
   let trajectory: ITrajectory;
   let connectingId: string;
@@ -99,7 +101,7 @@
     }
   }
 
-  function onDrop (event: DragEvent) {
+  function onDrop(event: DragEvent) {
     event.preventDefault();
 
     if (!event.dataTransfer) {
@@ -114,7 +116,7 @@
     });
 
     const newNode: any = {
-      id: `${$nodesStore.length + 1}`,
+      id: `${$nodesStore.length}`,
       type,
       position,
       data: { label: `StepNode ${$nodesStore.length + 1}` },
@@ -123,7 +125,104 @@
 
     $nodesStore.push(newNode);
     $nodesStore = [...$nodesStore];
-  };
+  }
+
+  function getClosestEdge(node: Node, nodes: Node[]) {
+    const closestNode = nodes.reduce(
+      (res, n) => {
+        // I am able to force it to connect to the last node in the list but d values are not updated
+        if (n.id !== node.id && parseInt(node.id) - 1 === parseInt(n.id)) {
+          //@ts-ignore
+          const dx = n.computed?.positionAbsolute.x - node.computed?.positionAbsolute.x;
+          console.log('dx: ', dx);
+          const dy =
+            //@ts-ignore
+            n.computed?.positionAbsolute.y +
+            //@ts-ignore
+            n.computed?.height / 2 -
+            //@ts-ignore
+            (node.computed?.positionAbsolute.y + node.computed?.height / 2);
+
+          const d = Math.sqrt(dx * dx + dy * dy);
+
+          if (d < res.distance && d <= MIN_DISTANCE) {
+            res.distance = d;
+            res.node = n;
+          }
+        }
+
+        return res;
+      },
+      <{ distance: number; node: Node | null }>{
+        distance: Number.MAX_VALUE,
+        node: null,
+      }
+    );
+
+    if (!closestNode.node) {
+      return null;
+    }
+
+    return {
+      id: crypto.randomUUID(),
+      source: closestNode.node.id,
+      target: node.id,
+      class: 'temp',
+      type: 'step'
+    };
+  }
+
+  function onNodeDrag({ detail: { node } }: any) {
+    console.log('node: ', node);
+    const closestEdge = getClosestEdge(node, $nodesStore);
+
+    let edgeAlreadyExists = false;
+    $edgesStore.forEach((edge, i) => {
+      if (edgeAlreadyExists) {
+        return;
+      }
+
+      if (closestEdge) {
+        // non-temporary edge already exists
+        if (
+          edge.source === closestEdge.source &&
+          edge.target === closestEdge.target
+        ) {
+          edgeAlreadyExists = true;
+          return;
+        }
+
+        if (edge.class !== 'temp') {
+          return;
+        }
+
+        if (
+          edge.source !== closestEdge.source ||
+          edge.target !== closestEdge.target
+        ) {
+          $edgesStore[i] = closestEdge; // replace the edge
+          edgeAlreadyExists = true;
+        }
+      } else if (edge.class === 'temp') {
+        $edgesStore.splice(i, 1); // remove edge
+      }
+    });
+
+    if (closestEdge && !edgeAlreadyExists) {
+      $edgesStore.push(closestEdge);
+    }
+
+    $edgesStore = [...$edgesStore];
+  }
+
+  function onNodeDragStop() {
+    $edgesStore.forEach((edge) => {
+      if (edge.class === 'temp') {
+        edge.class = '';
+      }
+    });
+    $edgesStore = [...$edgesStore];
+  }
 
   $: getChildren($activeItem);
 </script>
@@ -140,6 +239,8 @@
   onconnectend={onEdgeDrop}
   on:dragover={onDragOver}
   on:drop={onDrop}
+  on:nodedrag={onNodeDrag}
+  on:nodedragstop={onNodeDragStop}
 >
   <!-- on:nodeclick={(e) => console.log(e.detail.node)} -->
   <Controls />
