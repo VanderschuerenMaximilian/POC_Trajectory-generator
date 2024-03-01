@@ -111,13 +111,6 @@
 </NodeToolbar>
 <!-- TODO: make this responsive in another way -->
 {#key initalWidth || initialHeight}
-  <!-- <NodeResizer
-    minWidth={initalWidth}
-    minHeight={initialHeight}
-    maxWidth={300}
-    isVisible={selected}
-    keepAspectRatio={false}
-  /> -->
   {#if selected}
     <NodeResizeControl
       nodeId={id}
@@ -246,7 +239,7 @@
     flex-direction: column;
     align-items: center;
     /* justify-content: space-between; */
-    /* max-width: 340px; */
+    max-width: 320px;
     /* min-width: 220px; */
     background-color: #d9d9d9;
     border-radius: 15px;

@@ -2,6 +2,7 @@
   import type { NodeProps } from '@xyflow/svelte';
   import NodeOptions from './Node';
   import DatapointHandles from '../handles/DatapointHandles.svelte';
+  import DefaultNode from './DefaultNode.svelte';
 
   type $$Props = NodeProps;
 
@@ -38,15 +39,11 @@
   const nodeOptions = new NodeOptions();
   let domain = data.datapoint.concept.domain_name;
   let name = data.datapoint.name;
+
+  $: info = { name, domain };
 </script>
 
 {#if data}
-  <div
-    class="container__node"
-    style="background-color: {nodeOptions.colors.datapoint};"
-  >
-    <h1>{nodeOptions.capatalizeFirstLetter(name)}</h1>
-    <p>Concept: {nodeOptions.capatalizeFirstLetter(domain)}</p>
-  </div>
+  <DefaultNode color={nodeOptions.colors.datapoint} {info} />
   <DatapointHandles />
 {/if}

@@ -2,6 +2,7 @@
   import type { NodeProps } from '@xyflow/svelte';
   import EventHandles from '../handles/EventHandles.svelte';
   import NodeOptions from './Node';
+  import DefaultNode from './DefaultNode.svelte';
 
   type $$Props = NodeProps;
 
@@ -38,21 +39,11 @@
   const nodeOptions = new NodeOptions();
   let typeOfObj = data.event.type;
   let name = data.event.name;
+
+  $: info = { name, typeOfObj };
 </script>
 
 {#if data}
-  <div
-    class="container__node event"
-    style="background-color: {nodeOptions.colors.event}"
-  >
-    <h1>{nodeOptions.capatalizeFirstLetter(name)}</h1>
-    <p>Type: {nodeOptions.capatalizeFirstLetter(typeOfObj)}</p>
-  </div>
+  <DefaultNode color={nodeOptions.colors.trajectory} {info} />
   <EventHandles />
 {/if}
-
-<style scoped>
-  .event {
-    border-radius: 99px;
-  }
-</style>

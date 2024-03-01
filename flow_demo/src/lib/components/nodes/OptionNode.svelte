@@ -2,6 +2,7 @@
   import type { NodeProps } from '@xyflow/svelte';
   import NodeOptions from './Node';
   import OptionHandles from '../handles/OptionHandles.svelte';
+  import DefaultNode from './DefaultNode.svelte';
 
   type $$Props = NodeProps;
 
@@ -38,15 +39,11 @@
   const nodeOptions = new NodeOptions();
   let domain = data.option.concept.domain_name;
   let name = data.option.name;
+
+  $: info = { name, domain };
 </script>
 
 {#if data}
-  <div
-    class="container__node"
-    style="background-color: {nodeOptions.colors.option};"
-  >
-    <h1>{nodeOptions.capatalizeFirstLetter(name)}</h1>
-    <p>Concept: {nodeOptions.capatalizeFirstLetter(domain)}</p>
-  </div>
+  <DefaultNode color={nodeOptions.colors.option} {info} />
   <OptionHandles />
 {/if}

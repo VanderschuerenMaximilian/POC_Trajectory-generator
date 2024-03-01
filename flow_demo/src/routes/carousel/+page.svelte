@@ -1,6 +1,5 @@
 <script lang="ts">
   import Flow from '$lib/components/Flow.svelte';
-  import FullTrajectFlow from '$lib/components/FullTrajectFlow.svelte';
   import Header from '$lib/components/general/Header.svelte';
   import { SvelteFlowProvider } from '@xyflow/svelte';
   import { onMount } from 'svelte';
@@ -8,15 +7,12 @@
   import {
     trajectory as trajectoryStore,
     items as itemsStore,
-    activeItem,
   } from '$lib/store';
   import type { IPhase, IEvent } from '$lib/components/types';
   import JsonExtraction from '$lib/utilClasses/Json';
-  import ToggleConcepten from '$lib/components/general/ToggleConcepten.svelte';
 
   const extraction = new JsonExtraction();
   let items: (IPhase | IEvent)[] = [];
-  let toggleState: boolean = false;
 
   onMount(async () => {
     const { trajectory: trajectoryObj, items: PhasesAndEvents } =
@@ -25,41 +21,26 @@
     itemsStore.set(PhasesAndEvents);
     items = PhasesAndEvents;
   });
-
-  function onToggle() {
-    toggleState = !toggleState;
-  }
 </script>
 
-<div style="opacity: 0;">
-  <Header {items} />
-</div>
-{toggleState}
-<ToggleConcepten on:toggle={onToggle} />
 <main>
-  {#if toggleState}
+  <div style="opacity: 0;">
     <Header {items} />
-  {/if}
+  </div>
+  <Header {items} />
   <section>
     <SvelteFlowProvider>
-      {#if toggleState}
-        <Flow />
-      {:else}
-        <FullTrajectFlow />
-      {/if}
+      <Flow />
     </SvelteFlowProvider>
   </section>
 </main>
 
 <style scoped>
   main {
-    /* TODO: 100vh - the existing header height */
-    height: 76vh;
-    display: flex;
-    flex-direction: column;
+    min-height: 90vh;
   }
 
   section {
-    flex: 1;
+    height: 68vh;
   }
 </style>

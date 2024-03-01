@@ -2,6 +2,7 @@
   import { type NodeProps } from '@xyflow/svelte';
   import TrajectoryHandle from '../handles/TrajectoryHandles.svelte';
   import NodeOptions from './Node';
+  import DefaultNode from './DefaultNode.svelte';
 
   type $$Props = NodeProps;
 
@@ -39,15 +40,11 @@
 
   let domain = data.episode_object.concept.domain_name;
   let name = data.episode_object.name;
+
+  $: info = {name, domain}
 </script>
 
 {#if data}
-  <div
-    class="container__node"
-    style="background-color: {nodeOptions.colors.trajectory};"
-  >
-    <h1>{name}</h1>
-    <p>Concept: {nodeOptions.capatalizeFirstLetter(domain)}</p>
-  </div>
+  <DefaultNode color={nodeOptions.colors.trajectory} {info} />
   <TrajectoryHandle />
 {/if}

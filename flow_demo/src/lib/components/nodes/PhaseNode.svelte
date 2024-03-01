@@ -2,6 +2,7 @@
   import type { NodeProps } from '@xyflow/svelte';
   import PhaseHandles from '../handles/PhaseHandles.svelte';
   import NodeOptions from './Node';
+  import DefaultNode from './DefaultNode.svelte';
 
   type $$Props = NodeProps;
 
@@ -39,12 +40,11 @@
   let name = data.phase.name;
 
   const nodeOptions = new NodeOptions();
+
+  $: info = { name, typeOfObj };
 </script>
 
 {#if data}
-  <div class="container__node" style="background-color: {nodeOptions.colors.phase};">
-    <h1>{nodeOptions.capatalizeFirstLetter(name)}</h1>
-    <p>Type: {nodeOptions.capatalizeFirstLetter(typeOfObj)}</p>
-  </div>
+  <DefaultNode color={nodeOptions.colors.phase} {info} />
   <PhaseHandles />
 {/if}
