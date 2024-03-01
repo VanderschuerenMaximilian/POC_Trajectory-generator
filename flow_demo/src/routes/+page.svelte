@@ -43,7 +43,9 @@
   <section>
     <SvelteFlowProvider>
       {#if toggleState}
+        {#key $activeItem}
         <Flow />
+        {/key}
       {:else}
         <FullTrajectFlow />
       {/if}

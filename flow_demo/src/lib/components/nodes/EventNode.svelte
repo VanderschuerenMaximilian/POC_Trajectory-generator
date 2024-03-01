@@ -44,6 +44,6 @@
 </script>
 
 {#if data}
-  <DefaultNode color={nodeOptions.colors.trajectory} {info} />
+  <DefaultNode color={nodeOptions.colors.event} {info} />
   <EventHandles />
 {/if}

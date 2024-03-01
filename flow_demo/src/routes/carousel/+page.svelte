@@ -7,6 +7,7 @@
   import {
     trajectory as trajectoryStore,
     items as itemsStore,
+    activeItem,
   } from '$lib/store';
   import type { IPhase, IEvent } from '$lib/components/types';
   import JsonExtraction from '$lib/utilClasses/Json';
@@ -30,7 +31,9 @@
   <Header {items} />
   <section>
     <SvelteFlowProvider>
-      <Flow />
+      {#key $activeItem}
+        <Flow />
+      {/key}
     </SvelteFlowProvider>
   </section>
 </main>

@@ -85,7 +85,6 @@
   $: getChildren($activeItem);
 </script>
 
-{#key $activeItem}
 <SvelteFlow
   nodes={nodesStore}
   edges={edgesStore}
@@ -108,4 +107,3 @@
   <DragAndDropMenu />
   <MiniMap />
 </SvelteFlow>
-{/key}
