@@ -51,5 +51,6 @@
 <style scoped>
     main {
         height: 70vh;
+        overflow: hidden;
     }
 </style>

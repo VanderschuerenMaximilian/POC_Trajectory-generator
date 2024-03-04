@@ -18,7 +18,7 @@
 >
   <div use:grabHandle class:selected class="my-component" style="background-color: {node.data.color}">
     <div class="input">
-      <Anchor id="anchor-{node.data.parent}-{node.id}" input />
+      <Anchor id="anchor-{node.data.parent}-{node.id}" input/>
     </div>
     <div class="output">
       <Anchor output />

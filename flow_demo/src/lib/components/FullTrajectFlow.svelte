@@ -97,12 +97,13 @@
   }
 
   async function init() {
-    const { nodes: flatNodes, edges: flatEdges } =
+    const { nodes: elkNodes, edges: elkEdges } =
       await getFullTrajectoryNodes();
     // @ts-expect-error This is a Typescript error in the ElkJS & Svelte-flow package, the types don't match but work together
-    $nodesStore = flatNodes;
+    $nodesStore = elkNodes;
     // @ts-expect-error This is a Typescript error in the ElkJS & Svelte-flow package, the types don't match but work together
-    $edgesStore = flatEdges;
+    $edgesStore = elkEdges;
+    console.log('nodes: ', $nodesStore, 'edges: ', $edgesStore);
   }
 
   $: trajectory = $trajectoryStore;

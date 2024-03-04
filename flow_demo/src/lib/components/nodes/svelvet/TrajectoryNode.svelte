@@ -1,17 +1,18 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { Node, Anchor, type Connections } from 'svelvet';
+  import { Node, Anchor, type Connections, type CSSColorString } from 'svelvet';
   import { svelvetEdges } from '$lib/store';
+  import CustomOutputAnchor from '$lib/components/handles/svelvet/CustomOutputAnchor.svelte';
+  import { writable } from 'svelte/store';
 
   export let node: any;
-
+    const edgeColor = writable<CSSColorString>("rgb(150,0,0)")
   let connections: Connections = [];
 
   onMount(async () => {
     for (let edge of $svelvetEdges) {
       if (edge[1].includes(`anchor-${node.id}-`)) {
         connections.push(edge);
-        console.log(connections);
       }
     }
   });
@@ -37,7 +38,8 @@
     style="background-color: {node.data.color}"
   >
     <div class="output">
-      <Anchor id="anchor-{node.id}" output direction="south" {connections} />
+      <Anchor id="anchor-{node.id}" output edgeColor={edgeColor} edgeStyle="step" direction="south" {connections} />
+      <!-- <CustomOutputAnchor id={node.id} connections={connections} /> -->
     </div>
     <span>Trajectoy</span>
   </div>

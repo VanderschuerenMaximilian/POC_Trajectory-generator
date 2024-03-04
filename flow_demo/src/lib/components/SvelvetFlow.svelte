@@ -11,6 +11,7 @@
 
   let nodes: any = [];
   let edges: any = [];
+//   let innerWidth = window.innerWidth;
 
   $: {
     nodes = $svelvetNodes;
@@ -21,12 +22,19 @@
 <Svelvet
   id="my-canvas"
   TD
-  minimap
   controls
   locked
+  trackpadPan
+  edgeStyle="step"
   >
   <!-- on:edgeDrop={(e) => console.log('edgeDrop: ', e.detail)}
   on:connection={(e) => console.log('connection: ', e.detail)} -->
+  <Minimap 
+    width={innerWidth - 30}
+    height={200}
+    corner={"NW"}
+    slot="minimap"
+  />
     {#if nodes}
         {#each nodes as node, i}
             {#if node.type === NodeTypes.trajectory}
