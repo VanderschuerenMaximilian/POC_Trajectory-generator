@@ -4,14 +4,12 @@
   import { SvelteFlowProvider } from '@xyflow/svelte';
   import { onMount } from 'svelte';
   import IDBJson from '$lib/data/IBD_Crohn_Disease.json';
-  import Dummy from '$lib/data/dummy.json';
   import {
     trajectory as trajectoryStore,
     items as itemsStore,
   } from '$lib/store';
   import type { IPhase, IEvent } from '$lib/components/types';
   import JsonExtraction from '$lib/utilClasses/Json';
-  import '$lib/components/nodes/basicNode.css';
 
   const extraction = new JsonExtraction();
   let items: (IPhase | IEvent)[] = [];

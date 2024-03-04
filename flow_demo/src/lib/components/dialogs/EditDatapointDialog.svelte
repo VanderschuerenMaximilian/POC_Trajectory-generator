@@ -11,6 +11,6 @@
 {#if datapoint}
   <Dialog bind:dialog height="75%" width="75%">
     <h3>Edit {datapoint.name}</h3>
-    <!-- {JSON.stringify(step)} -->
+    {JSON.stringify(step)}
   </Dialog>
 {/if}

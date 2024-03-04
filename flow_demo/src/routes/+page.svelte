@@ -34,7 +34,6 @@
 <div style="opacity: 0;">
   <Header {items} />
 </div>
-{toggleState}
 <ToggleConcepten on:toggle={onToggle} />
 <main>
   {#if toggleState}
@@ -44,7 +43,7 @@
     <SvelteFlowProvider>
       {#if toggleState}
         {#key $activeItem}
-        <Flow />
+          <Flow />
         {/key}
       {:else}
         <FullTrajectFlow />
@@ -56,7 +55,7 @@
 <style scoped>
   main {
     /* TODO: 100vh - the existing header height */
-    height: 76vh;
+    height: 72vh;
     display: flex;
     flex-direction: column;
   }
