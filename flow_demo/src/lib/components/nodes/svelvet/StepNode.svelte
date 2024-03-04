@@ -9,34 +9,37 @@
 
   onMount(async () => {
     for (let edge of $svelvetEdges) {
-      // console.log('edge: ', edge);
+        // console.log('edge: ', edge);
       if (edge[1].includes(`anchor-${node.id}-`)) {
         connections.push(edge);
       }
     }
   });
-
-  function handleClick(e: CustomEvent) {
-    console.log(e);
-    const { detail } = e;
-  }
 </script>
 
 <Node
   id={node.id}
   let:grabHandle
   let:selected
-  position={{ x: 200*(parseInt(node.id)-1), y: 200 }}
-  on:nodeClicked={handleClick}
+  position={{ x: 200 * (parseInt(node.id) - 1), y: 400 }}
 >
-  <div use:grabHandle class:selected class="my-component" style="background-color: {node.data.color}">
+  <div
+    use:grabHandle
+    class:selected
+    class="my-component"
+    style="background-color: {node.data.color}"
+  >
     <div class="input">
-      <Anchor id="anchor-{node.data.parent}-{node.id}" input direction={"north"}/>
+      <Anchor
+        id="anchor-{node.data.parent}-{node.id}"
+        input
+        direction={"north"}
+      />
     </div>
     <div class="output">
-      <Anchor id={node.id} output direction={"south"} {connections}/>
+      <Anchor output direction={"south"} {connections} />
     </div>
-    <span>Event</span>
+    <span>Step</span>
   </div>
 </Node>
 

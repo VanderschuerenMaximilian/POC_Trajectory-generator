@@ -2,7 +2,6 @@
   import { onMount } from 'svelte';
   import { Node, Anchor, type Connections, type CSSColorString } from 'svelvet';
   import { svelvetEdges } from '$lib/store';
-  import CustomOutputAnchor from '$lib/components/handles/svelvet/CustomOutputAnchor.svelte';
   import { writable } from 'svelte/store';
 
   export let node: any;
@@ -38,8 +37,7 @@
     style="background-color: {node.data.color}"
   >
     <div class="output">
-      <Anchor id="anchor-{node.id}" output edgeColor={edgeColor} edgeStyle="step" direction="south" {connections} />
-      <!-- <CustomOutputAnchor id={node.id} connections={connections} /> -->
+      <Anchor id="anchor-{node.id}" output edgeColor={edgeColor} direction="south" {connections} />
     </div>
     <span>Trajectoy</span>
   </div>

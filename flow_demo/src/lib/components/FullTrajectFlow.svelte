@@ -59,11 +59,13 @@
     edges: Edge[],
     options: LayoutOptions
   ): Promise<{ nodes: ElkNode[]; edges: ElkExtendedEdge[] }> {
+    // console.log('nodes: ', nodes, 'edges: ', edges)
     const transformedNodes = nodes.map((node) => ({
       ...node,
       children: node.data.children ?? [],
       layoutOptions: options,
     }));
+    console.log('transformedNodes: ', transformedNodes)
     const graph = {
       id: 'root',
       layoutOptions: options,
@@ -103,7 +105,6 @@
     $nodesStore = elkNodes;
     // @ts-expect-error This is a Typescript error in the ElkJS & Svelte-flow package, the types don't match but work together
     $edgesStore = elkEdges;
-    console.log('nodes: ', $nodesStore, 'edges: ', $edgesStore);
   }
 
   $: trajectory = $trajectoryStore;

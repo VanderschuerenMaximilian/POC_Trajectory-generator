@@ -32,7 +32,7 @@
       );
     svelvetNodes.set(nodes);
     svelvetEdges.set(edges);
-    console.log('nodes: ', nodes, 'edges: ', edges);
+    // console.log('nodes: ', nodes, 'edges: ', edges);
   });
 
   function onToggle() {
