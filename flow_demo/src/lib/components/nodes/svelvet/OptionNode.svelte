@@ -26,9 +26,6 @@
         direction={"north"}
       />
     </div>
-    <div class="output">
-      <Anchor id="anchor-{node.id}" output direction={"south"} />
-    </div>
     <span>{nodeOptions.capatalizeFirstLetter(node.data.option.name)}</span>
   </div>
 </Node>
@@ -39,13 +36,6 @@
     top: 0;
     left: 45%;
     transform: translateY(-50%);
-  }
-
-  .output {
-    position: absolute;
-    bottom: 0;
-    left: 45%;
-    transform: translateY(50%);
   }
 
   .my-component {
