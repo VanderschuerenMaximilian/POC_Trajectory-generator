@@ -8,6 +8,9 @@ export const nodes = writable<Node[]>([])
 // export const edges = writable<Edge[]>(initialEdges)
 export const edges = writable<Edge[]>([])
 
+export const svelvetNodes =  writable<any>()
+export const svelvetEdges = writable<any>()
+
 export const trajectory = writable<ITrajectory>()
 export const items = writable<(IPhase|IEvent)[]>()
 export const activeItem = writable<IPhase|IEvent>()
