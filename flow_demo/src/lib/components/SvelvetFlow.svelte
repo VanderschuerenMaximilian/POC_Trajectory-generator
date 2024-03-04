@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Node, Svelvet, Minimap, Controls } from 'svelvet';
+  import { Svelvet, Minimap } from 'svelvet';
   import TrajectoryNode from '$lib/components/nodes/svelvet/TrajectoryNode.svelte';
   import PhaseNode from '$lib/components/nodes/svelvet/PhaseNode.svelte';
   import EventNode from '$lib/components/nodes/svelvet/EventNode.svelte';

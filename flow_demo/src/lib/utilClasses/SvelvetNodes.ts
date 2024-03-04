@@ -50,15 +50,15 @@ export default class SvelvetExtraction {
         for (const step of phase.steps) await this.extractFromStep(step, id, phase.name)
     }
 
-    private async extractFromOption(step: any, parentId: string, phaseName: string) {
-        const specificInfo: any = { step, parent: parentId, phase: phaseName }
+    private async extractFromOption(option: any, parentId: string, phaseName: string) {
+        const specificInfo: any = { option, parent: parentId, phase: phaseName }
         const id = await this.assembleNodeAndReturnId(EnumNodeTypes.option, NodeColors.option, specificInfo)
         this.assembleEdge(parentId, id)
     }
 
     private async extractFromStep(step: any, parentId: string, phaseName: string) {
         const { datapoints, ...stepInfo } = step
-        const specificInfo: any = { stepInfo, parent: parentId, phase: phaseName }
+        const specificInfo: any = { step:stepInfo, parent: parentId, phase: phaseName }
         const id = await this.assembleNodeAndReturnId(EnumNodeTypes.step, NodeColors.step, specificInfo)
         this.assembleEdge(parentId, id)
         for (const datapoint of step.datapoints) await this.extractFromDatapoint(datapoint, id, phaseName, step.name)

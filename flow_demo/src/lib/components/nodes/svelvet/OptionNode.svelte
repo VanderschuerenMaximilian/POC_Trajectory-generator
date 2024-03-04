@@ -1,7 +1,10 @@
 <script lang="ts">
   import { Node, Anchor } from 'svelvet';
+  import NodeOptions from '../Node';
 
   export let node: any;
+
+  const nodeOptions = new NodeOptions();
 </script>
 
 <Node
@@ -26,7 +29,7 @@
     <div class="output">
       <Anchor id="anchor-{node.id}" output direction={"south"} />
     </div>
-    <span>Option</span>
+    <span>{nodeOptions.capatalizeFirstLetter(node.data.option.name)}</span>
   </div>
 </Node>
 

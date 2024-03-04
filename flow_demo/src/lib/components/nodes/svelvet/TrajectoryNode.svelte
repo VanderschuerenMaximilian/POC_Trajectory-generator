@@ -5,6 +5,7 @@
   import { writable } from 'svelte/store';
 
   export let node: any;
+  console.log(node)
   const edgeColor = writable<CSSColorString>('rgb(150,0,0)');
   let connections: Connections = [];
 
@@ -33,7 +34,7 @@
         {connections}
       />
     </div>
-    <span>Trajectoy</span>
+    <span>{node.data.episode_object.name}</span>
   </div>
 </Node>
 

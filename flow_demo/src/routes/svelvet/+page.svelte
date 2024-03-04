@@ -50,7 +50,7 @@
 
 <style scoped>
     main {
-        height: 70vh;
-        overflow: hidden;
+        height: 81vh;
+        text-align: center;
     }
 </style>
