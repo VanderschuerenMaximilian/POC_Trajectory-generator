@@ -9,7 +9,6 @@
 
   onMount(async () => {
     for (let edge of $svelvetEdges) {
-        // console.log('edge: ', edge);
       if (edge[1].includes(`anchor-${node.id}-`)) {
         connections.push(edge);
       }
@@ -37,7 +36,7 @@
       />
     </div>
     <div class="output">
-      <Anchor output direction={"south"} {connections} />
+      <Anchor id="anchor-{node.id}" output direction={"south"} {connections} />
     </div>
     <span>Step</span>
   </div>

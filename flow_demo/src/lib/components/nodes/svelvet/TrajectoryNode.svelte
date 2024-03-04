@@ -5,7 +5,7 @@
   import { writable } from 'svelte/store';
 
   export let node: any;
-    const edgeColor = writable<CSSColorString>("rgb(150,0,0)")
+  const edgeColor = writable<CSSColorString>('rgb(150,0,0)');
   let connections: Connections = [];
 
   onMount(async () => {
@@ -15,21 +15,9 @@
       }
     }
   });
-
-  function handleClick(e: CustomEvent) {
-    console.log(e);
-    const { detail } = e;
-    console.log(detail);
-  }
 </script>
 
-<Node
-  id={node.id}
-  let:grabHandle
-  let:selected
-  position={{ x: 600, y: 0 }}
-  on:nodeClicked={handleClick}
->
+<Node id={node.id} let:grabHandle let:selected position={{ x: 600, y: 0 }}>
   <div
     use:grabHandle
     class:selected
@@ -37,7 +25,13 @@
     style="background-color: {node.data.color}"
   >
     <div class="output">
-      <Anchor id="anchor-{node.id}" output edgeColor={edgeColor} direction="south" {connections} />
+      <Anchor
+        id="anchor-{node.id}"
+        output
+        {edgeColor}
+        direction="south"
+        {connections}
+      />
     </div>
     <span>Trajectoy</span>
   </div>

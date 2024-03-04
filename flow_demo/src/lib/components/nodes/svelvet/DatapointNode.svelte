@@ -1,20 +1,7 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { Node, Anchor, type Connections } from 'svelvet';
-  import { svelvetEdges } from '$lib/store';
+  import { Node, Anchor } from 'svelvet';
 
   export let node: any;
-
-  let connections: Connections = [];
-
-//   onMount(async () => {
-//     for (let edge of $svelvetEdges) {
-//         // console.log('edge: ', edge);
-//       if (edge[1].includes(`anchor-${node.data.parent}-${node.id}`)) {
-//         connections.push(edge);
-//       }
-//     }
-//   });
 </script>
 
 <Node
@@ -37,7 +24,7 @@
       />
     </div>
     <div class="output">
-      <Anchor output direction={"south"} />
+      <Anchor id="anchor-{node.id}" output direction={"south"} />
     </div>
     <span>Datapoint</span>
   </div>

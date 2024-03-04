@@ -9,17 +9,11 @@
 
   onMount(async () => {
     for (let edge of $svelvetEdges) {
-      // console.log('edge: ', edge);
       if (edge[1].includes(`anchor-${node.id}-`)) {
         connections.push(edge);
       }
     }
   });
-
-  function handleClick(e: CustomEvent) {
-    console.log(e);
-    const { detail } = e;
-  }
 </script>
 
 <Node
@@ -27,7 +21,6 @@
   let:grabHandle
   let:selected
   position={{ x: 200 * (parseInt(node.id) - 1), y: 200 }}
-  on:nodeClicked={handleClick}
 >
   <div
     use:grabHandle
