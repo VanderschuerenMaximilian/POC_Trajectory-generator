@@ -66,3 +66,35 @@ In Svelte Flow, the minimap cannot be panned using a touchpad, posing a limitati
 # Conclusion
 
 In my current experience with both frameworks, I find Svelte Flow to be my preferred choice. Not only does it offer more features, but its documentation is also more comprehensive. The abundance of examples on their website provided valuable insights into effectively utilizing the package. Fortunately, my familiarity with Svelte Flow allowed me to navigate through the shortcomings of the Svelvet documentation. Additionally, I appreciate the more logical implementation of edges in Svelte Flow. While my opinion may be biased due to using an extra package, [elkjs](https://github.com/kieler/elkjs), for node display in my proof of concepts, I found that Svelte Flow is compatible with such integrations.
+
+# Running this project
+
+Once you have cloned this project make sure you are in the `flow_demo` folder and use the next commands.
+
+```bash
+npm run install
+
+npm run dev
+
+# or start the server and open the app in a new browser tab
+npm run dev -- --open
+```
+
+**Error** To address an error or compatibility issue in the elkjs package I'm currently using, a local fix is possible. To implement this solution, follow these steps: Install the `node_modules` and locate the elkjs folder within. Inside the lib folder, find the main.js file. In this file, specifically on line 36, there's an if-statement. Replace this if-statement with the provided code below. This modification will effectively handle the error in the package, ensuring the smooth execution of the project.
+
+```javascript
+try {
+    if (options.workerUrl) {
+        if (workerThreadsExist) {
+            var Worker = require('web-worker');
+            optionsClone.workerFactory = function (url) {
+                return new Worker(url);
+            };
+        } else {
+            console.warn('Web worker requested but \'web-worker\' package not installed. \nConsider installing the package or pass your own \'workerFactory\' to ELK\'s constructor.\n... Falling back to non-web worker version.');
+        }
+    }
+    } catch (e) {
+      console.warn('Web worker requested but \'web-worker\' package not installed.');
+    }
+```
