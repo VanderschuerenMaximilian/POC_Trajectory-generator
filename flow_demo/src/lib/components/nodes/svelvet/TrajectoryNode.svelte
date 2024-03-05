@@ -5,8 +5,8 @@
   import { writable } from 'svelte/store';
 
   export let node: any;
-  console.log(node)
-  const edgeColor = writable<CSSColorString>('rgb(150,0,0)');
+
+  const edgeColor = writable<CSSColorString>('rgb(0,0,0)');
   let connections: Connections = [];
 
   onMount(async () => {
@@ -18,11 +18,11 @@
   });
 </script>
 
-<Node id={node.id} let:grabHandle let:selected position={{ x: 600, y: 0 }}>
+<Node id={node.id} let:grabHandle let:selected position={{ x: 8000, y: 0 }}>
   <div
     use:grabHandle
     class:selected
-    class="my-component"
+    class="container__node"
     style="background-color: {node.data.color}"
   >
     <div class="output">
@@ -32,18 +32,37 @@
         {edgeColor}
         direction="south"
         {connections}
+        locked
       />
     </div>
-    <span>{node.data.episode_object.name}</span>
+    <h1>{node.data.episode_object.name}</h1>
   </div>
 </Node>
 
 <style scoped>
-  .my-component {
-    position: relative;
-    padding: 10px;
-    cursor: pointer;
+  .container__node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 16px;
+    border-radius: 5px;
     color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-width: 180px;
+  }
+
+  .container__node h1 {
+    margin: 0;
+    padding: 0;
+    font-weight: 700;
+    max-width: 200px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    line-height: 2rem;
   }
 
   .output {

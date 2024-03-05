@@ -11,12 +11,13 @@
   id={node.id}
   let:grabHandle
   let:selected
-  position={{ x: 200 * (parseInt(node.id) - 1), y: 400 }}
+  position={{ x: 250 * (parseInt(node.id) - 1), y: 400 }}
+  locked
 >
   <div
     use:grabHandle
     class:selected
-    class="my-component"
+    class="container__node"
     style="background-color: {node.data.color}"
   >
     <div class="input">
@@ -26,7 +27,7 @@
         direction={"north"}
       />
     </div>
-    <span>{nodeOptions.capatalizeFirstLetter(node.data.option.name)}</span>
+    <h1>{nodeOptions.capatalizeFirstLetter(node.data.option.name)}</h1>
   </div>
 </Node>
 
@@ -38,9 +39,28 @@
     transform: translateY(-50%);
   }
 
-  .my-component {
-    position: relative;
-    padding: 10px;
+  .container__node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 16px;
+    border-radius: 5px;
     color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-width: 180px;
+  }
+
+  .container__node h1 {
+    margin: 0;
+    padding: 0;
+    font-weight: 700;
+    max-width: 200px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    line-height: 2rem;
   }
 </style>

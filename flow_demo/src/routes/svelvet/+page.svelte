@@ -13,6 +13,7 @@
     svelvetEdges,
   } from '$lib/store';
   import type { IPhase, IEvent } from '$lib/components/types';
+  import DragAndDrop from '$lib/components/general/svelvet/DragAndDrop.svelte';
 
   const extraction = new JsonExtraction();
   const svelvetExtraction = new SvelvetExtraction();

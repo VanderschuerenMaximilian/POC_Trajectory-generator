@@ -1,21 +1,26 @@
 <script lang="ts">
-  import { Svelvet, Minimap } from 'svelvet';
+  import { Svelvet, Minimap, Drawer, ThemeToggle } from 'svelvet';
   import TrajectoryNode from '$lib/components/nodes/svelvet/TrajectoryNode.svelte';
   import PhaseNode from '$lib/components/nodes/svelvet/PhaseNode.svelte';
   import EventNode from '$lib/components/nodes/svelvet/EventNode.svelte';
   import StepNode from './nodes/svelvet/StepNode.svelte';
   import { svelvetNodes, svelvetEdges } from '$lib/store';
-  import { EnumNodeTypes } from '$lib/utilClasses/SvelvetNodes';
-//   import {
-//     type LayoutOptions,
-//     type ElkNode,
-//     type ElkExtendedEdge,
-//   } from 'elkjs';
-//   import { flattenArray } from '$lib/utils';
-//   import ELK from 'elkjs';
+  import { EnumNodeTypes, EnumNodeColors } from '$lib/utilClasses/SvelvetNodes';
+  //   import {
+  //     type LayoutOptions,
+  //     type ElkNode,
+  //     type ElkExtendedEdge,
+  //   } from 'elkjs';
+  //   import { flattenArray } from '$lib/utils';
+  //   import ELK from 'elkjs';
   import OptionNode from './nodes/svelvet/OptionNode.svelte';
   import DatapointNode from './nodes/svelvet/DatapointNode.svelte';
+  import DragAndDrop from './general/svelvet/DragAndDrop.svelte';
 
+  //   TODO: Om elk te implementeren:
+  // in the node specifics -> a Edge object -> map de nodes for the edge objects in SvelvetFlow.svelte
+  // -> convert de edges you get from elk into [ , ]
+  
   //   const elk = new ELK();
   //   const elkOptions: LayoutOptions = {
   //     'elk.algorithm': 'mrtree',
@@ -81,15 +86,77 @@
   //     // console.log('nodes: ', $nodesStore, 'edges: ', $edgesStore);
   //   }
 
+  function onEdgeDrop(event: CustomEvent) {
+    if (event.type !== 'edgeDrop') return;
+    const {
+      detail: { source },
+    } = event;
+    const newNodeId = nodes.length + 1;
+    const sourceNode = nodes[parseInt(source.node) - 1];
+    const { type: newType, color } = determineType(sourceNode.type);
+    const newNode = {
+      id: newNodeId,
+      type: newType,
+      data: {
+        parent: sourceNode.id,
+        color: color,
+        datapoint: {
+          name: `Datapoint ${newNodeId}`,
+          description: `Description for Datapoint ${newNodeId}`,
+        },
+      },
+    };
+    const newEdge = [
+      newNodeId.toString(),
+      `anchor-${sourceNode.id}-${newNodeId}`,
+    ];
+    nodes = [...nodes, newNode];
+    // edges.push(newEdge);
+    edges = [...edges, newEdge];
+  }
+
+  function determineType(sourceType: EnumNodeTypes): {
+    type: EnumNodeTypes;
+    color: EnumNodeColors;
+  } {
+    switch (sourceType) {
+      case EnumNodeTypes.phase:
+        return { type: EnumNodeTypes.step, color: EnumNodeColors.step };
+      case EnumNodeTypes.event:
+        return { type: EnumNodeTypes.option, color: EnumNodeColors.option };
+      case EnumNodeTypes.step:
+        return {
+          type: EnumNodeTypes.datapoint,
+          color: EnumNodeColors.datapoint,
+        };
+      default:
+        return {
+          type: EnumNodeTypes.datapoint,
+          color: EnumNodeColors.datapoint,
+        };
+    }
+  }
+
   $: {
     nodes = $svelvetNodes;
     edges = $svelvetEdges;
     // if (nodes && edges) init();
   }
+
+  // $: console.log('nodes: ', nodes, 'edges: ', edges)
 </script>
 
-<Svelvet id="my-canvas" TD controls locked trackpadPan edgeStyle="step">
-  <Minimap width={innerWidth - 30} height={200} corner={'NW'} slot="minimap" />
+<Svelvet
+  id="my-canvas"
+  TD
+  controls
+  trackpadPan
+  edgeStyle="step"
+  zoom={0.4}
+  on:edgeDrop={onEdgeDrop}
+>
+  <Minimap borderColor={"rgba(255,255,255,0)"} width={innerWidth - 30} height={200} corner={'NW'} slot="minimap" />
+  <!-- <DragAndDrop /> -->
   {#if nodes}
     {#each nodes as node, i}
       {#if node.type === EnumNodeTypes.trajectory}
