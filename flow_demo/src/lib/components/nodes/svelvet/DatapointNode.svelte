@@ -3,6 +3,7 @@
   import NodeOptions from '../Node';
 
   export let node: any;
+  export let i: any;
 
   const nodeOptions = new NodeOptions();
 </script>
@@ -14,6 +15,7 @@
   position={{ x: node.position.x, y: node.position.y }}
 >
   <div
+    id={i}
     use:grabHandle
     class:selected
     class="container__node"
@@ -66,6 +68,5 @@
 
   .selected {
     outline: 2px solid #040404;
-    color: rgb(243, 238, 9)
   }
 </style>

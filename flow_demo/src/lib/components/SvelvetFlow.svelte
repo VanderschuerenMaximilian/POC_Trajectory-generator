@@ -20,8 +20,7 @@
   const elk = new ELK();
   const elkOptions: LayoutOptions = {
     'elk.algorithm': 'mrtree',
-    // 'elk.layered.spacing.nodeNodeBetweenLayers': '80',
-    'elk.spacing.nodeNode': '240',
+    'elk.spacing.nodeNode': '260',
     'elk.direction': 'DOWN',
   };
   let nodes: any = [];
@@ -177,17 +176,17 @@
   {#if nodes}
     {#each nodes as node, i}
       {#if node.type === EnumNodeTypes.trajectory}
-        <TrajectoryNode {node} />
+        <TrajectoryNode {node} {i} />
       {:else if node.type === EnumNodeTypes.phase}
-        <PhaseNode {node} />
+        <PhaseNode {node} {i} />
       {:else if node.type === EnumNodeTypes.event}
-        <EventNode {node} />
+        <EventNode {node} {i} />
       {:else if node.type === EnumNodeTypes.step}
-        <StepNode {node} />
+        <StepNode {node} {i} />
       {:else if node.type === EnumNodeTypes.option}
-        <OptionNode {node} />
+        <OptionNode {node} {i} />
       {:else if node.type === EnumNodeTypes.datapoint}
-        <DatapointNode {node} />
+        <DatapointNode {node} {i} />
       {/if}
     {/each}
   {/if}

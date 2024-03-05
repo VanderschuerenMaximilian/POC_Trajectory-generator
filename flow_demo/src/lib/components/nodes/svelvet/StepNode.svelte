@@ -5,6 +5,7 @@
   import NodeOptions from '../Node';
 
   export let node: any;
+  export let i: any;
 
   const nodeOptions = new NodeOptions();
   let connections: Connections = [];
@@ -37,6 +38,7 @@
   locked
 >
   <div
+    id={i}
     use:grabHandle
     class:selected
     class="container__node"

@@ -3,6 +3,7 @@
   import NodeOptions from '../Node';
 
   export let node: any;
+  export let i: any;
 
   const nodeOptions = new NodeOptions();
 </script>
@@ -15,6 +16,7 @@
   locked
 >
   <div
+    id={i}
     use:grabHandle
     class:selected
     class="container__node"
@@ -24,7 +26,7 @@
       <Anchor
         id="anchor-{node.data.parent}-{node.id}"
         input
-        direction={"north"}
+        direction={'north'}
       />
     </div>
     <h1>{nodeOptions.capatalizeFirstLetter(node.data.option.name)}</h1>

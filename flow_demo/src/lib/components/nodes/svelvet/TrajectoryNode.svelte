@@ -5,6 +5,7 @@
   import { writable } from 'svelte/store';
 
   export let node: any;
+  export let i: any;
 
   const edgeColor = writable<CSSColorString>('rgb(0,0,0)');
   let connections: Connections = [];
@@ -20,6 +21,7 @@
 
 <Node id={node.id} let:grabHandle let:selected position={{ x: node.position.x, y: node.position.y }}>
   <div
+    id={i}
     use:grabHandle
     class:selected
     class="container__node"

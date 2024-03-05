@@ -5,6 +5,7 @@
   import NodeOptions from '../Node';
 
   export let node: any;
+  export let i: any;
 
   const nodeOptions = new NodeOptions();
   let connections: Connections = [];
@@ -25,7 +26,7 @@
   position={{ x: node.position.x, y: node.position.y }}
   locked
 >
-  <div use:grabHandle class:selected class="container__node" style="background-color: {node.data.color}">
+  <div id={i} use:grabHandle class:selected class="container__node" style="background-color: {node.data.color}">
     <div class="input">
       <Anchor id="anchor-{node.data.parent}-{node.id}" input direction={"north"}/>
     </div>
