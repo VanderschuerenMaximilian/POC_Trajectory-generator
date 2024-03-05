@@ -38,6 +38,7 @@
   let connectingId: string;
 
   onMount(async () => {
+    if ($itemsStore.length && !$trajectoryStore) return;
     items = $itemsStore;
     trajectory = $trajectoryStore;
   });

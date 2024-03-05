@@ -6,13 +6,13 @@
   import StepNode from './nodes/svelvet/StepNode.svelte';
   import { svelvetNodes, svelvetEdges } from '$lib/store';
   import { EnumNodeTypes, EnumNodeColors } from '$lib/utilClasses/SvelvetNodes';
-  //   import {
-  //     type LayoutOptions,
-  //     type ElkNode,
-  //     type ElkExtendedEdge,
-  //   } from 'elkjs';
-  //   import { flattenArray } from '$lib/utils';
-  //   import ELK from 'elkjs';
+    import {
+      type LayoutOptions,
+      type ElkNode,
+      type ElkExtendedEdge,
+    } from 'elkjs';
+    import { flattenArray } from '$lib/utils';
+    import ELK from 'elkjs';
   import OptionNode from './nodes/svelvet/OptionNode.svelte';
   import DatapointNode from './nodes/svelvet/DatapointNode.svelte';
   import DragAndDrop from './general/svelvet/DragAndDrop.svelte';
@@ -155,7 +155,16 @@
   zoom={0.4}
   on:edgeDrop={onEdgeDrop}
 >
-  <Minimap borderColor={"rgba(255,255,255,0)"} width={innerWidth - 30} height={200} corner={'NW'} slot="minimap" />
+  <Minimap borderColor={"rgba(255,255,255,0)"} width={1880} height={200} corner={'NW'} slot="minimap" nodeColor={'rgb(0,0,0)'} />
+  <!-- (n) => {
+     if (n.type === EnumNodeTypes.trajectory) return 'rgba(0, 150, 0, 0.75)';
+     else if (n.type === EnumNodeTypes.phase) return 'rgb(220,20,60)';
+     else if (n.type === EnumNodeTypes.event) return 'rgb(98, 202, 237)';
+     else if (n.type === EnumNodeTypes.step) return 'rgb(255, 105, 180)';
+     else if (n.type === EnumNodeTypes.option) return 'rgb(255, 165, 0)';
+     else if (n.type === EnumNodeTypes.datapoint) return 'rgb(243, 238, 9)';
+     else return 'rgba(0,0,0)';
+  } -->
   <!-- <DragAndDrop /> -->
   {#if nodes}
     {#each nodes as node, i}

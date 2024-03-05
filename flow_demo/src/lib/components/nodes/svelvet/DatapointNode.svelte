@@ -63,4 +63,9 @@
     text-overflow: ellipsis;
     line-height: 2rem;
   }
+
+  .selected {
+    outline: 2px solid #040404;
+    color: rgb(243, 238, 9)
+  }
 </style>

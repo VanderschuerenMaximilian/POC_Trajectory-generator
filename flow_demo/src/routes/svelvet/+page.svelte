@@ -13,7 +13,6 @@
     svelvetEdges,
   } from '$lib/store';
   import type { IPhase, IEvent } from '$lib/components/types';
-  import DragAndDrop from '$lib/components/general/svelvet/DragAndDrop.svelte';
 
   const extraction = new JsonExtraction();
   const svelvetExtraction = new SvelvetExtraction();
@@ -36,22 +35,22 @@
     // console.log('nodes: ', nodes, 'edges: ', edges);
   });
 
-  function onToggle() {
-    toggleState = !toggleState;
-  }
+  // function onToggle() {
+  //   toggleState = !toggleState;
+  // }
 </script>
 
 <div style="opacity: 0;">
   <Header {items} />
 </div>
-<ToggleConcepten on:toggle={onToggle} />
+<!-- <ToggleConcepten on:toggle={onToggle} /> -->
 <main>
   <SvelvetFlow />
 </main>
 
 <style scoped>
     main {
-        height: 81vh;
+        height: 86vh;
         text-align: center;
     }
 </style>
