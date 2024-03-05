@@ -18,7 +18,7 @@
   });
 </script>
 
-<Node id={node.id} let:grabHandle let:selected position={{ x: 8000, y: 0 }}>
+<Node id={node.id} let:grabHandle let:selected position={{ x: node.position.x, y: node.position.y }}>
   <div
     use:grabHandle
     class:selected

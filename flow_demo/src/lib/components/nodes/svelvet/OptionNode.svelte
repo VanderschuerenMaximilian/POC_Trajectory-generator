@@ -11,7 +11,7 @@
   id={node.id}
   let:grabHandle
   let:selected
-  position={{ x: 250 * (parseInt(node.id) - 1), y: 400 }}
+  position={{ x: node.position.x, y: node.position.y }}
   locked
 >
   <div

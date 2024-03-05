@@ -6,85 +6,88 @@
   import StepNode from './nodes/svelvet/StepNode.svelte';
   import { svelvetNodes, svelvetEdges } from '$lib/store';
   import { EnumNodeTypes, EnumNodeColors } from '$lib/utilClasses/SvelvetNodes';
-    import {
-      type LayoutOptions,
-      type ElkNode,
-      type ElkExtendedEdge,
-    } from 'elkjs';
-    import { flattenArray } from '$lib/utils';
-    import ELK from 'elkjs';
+  import {
+    type LayoutOptions,
+    type ElkNode,
+    type ElkExtendedEdge,
+  } from 'elkjs';
+  import { flattenArray } from '$lib/utils';
+  import ELK from 'elkjs';
   import OptionNode from './nodes/svelvet/OptionNode.svelte';
   import DatapointNode from './nodes/svelvet/DatapointNode.svelte';
   import DragAndDrop from './general/svelvet/DragAndDrop.svelte';
 
-  //   TODO: Om elk te implementeren:
-  // in the node specifics -> a Edge object -> map de nodes for the edge objects in SvelvetFlow.svelte
-  // -> convert de edges you get from elk into [ , ]
-  
-  //   const elk = new ELK();
-  //   const elkOptions: LayoutOptions = {
-  //     'elk.algorithm': 'mrtree',
-  //     // 'elk.layered.spacing.nodeNodeBetweenLayers': '80',
-  //     'elk.spacing.nodeNode': '280',
-  //     'elk.direction': 'DOWN',
-  //   };
+  const elk = new ELK();
+  const elkOptions: LayoutOptions = {
+    'elk.algorithm': 'mrtree',
+    // 'elk.layered.spacing.nodeNodeBetweenLayers': '80',
+    'elk.spacing.nodeNode': '240',
+    'elk.direction': 'DOWN',
+  };
   let nodes: any = [];
   let edges: any = [];
+  let firstNodes: any = [];
+  let firstEdges: any = [];
 
-  //   async function getElementsLayout(
-  //     nodes: any[],
-  //     edges: any[],
-  //     options: LayoutOptions
-  //   ): Promise<{ nodes: ElkNode[]; edges: ElkExtendedEdge[] }> {
-  //     const transformedNodes = nodes.map((node) => ({
-  //       ...node,
-  //       children: node.data.children ?? [],
-  //       layoutOptions: options,
-  //     }));
-  //     const graph = {
-  //         id: 'root',
-  //         layoutOptions: options,
-  //         children: transformedNodes,
-  //         edges,
-  //     };
-  //     const elkGraph = await elk.layout(graph);
-  //     console.log(transformedNodes)
-  //     const elkChildren = elkGraph.children ?? [];
-  //     const flattenedArray = flattenArray(elkChildren, 'children').map(
-  //       (node: ElkNode) => ({
-  //         ...node,
-  //         position: { x: node.x, y: node.y },
-  //       })
-  //     );
-  //     return {
-  //       nodes: flattenedArray,
-  //       edges: elkGraph.edges ?? [],
-  //     };
-  //   }
+  function getSource(anchor: string) {
+    const split = anchor.split('-');
+    return split[1];
+  }
 
-  //   async function getFullTrajectoryNodes() {
-  //     const convertedEdges = $svelvetEdges.map((edge: any) => (console.log('edge: ', edge), {
-  //       id: edge.id,
-  //       sources: edge.source,
-  //       targets: edge.target,
-  //     }));
-  //     const { nodes: elementNodes, edges: elementEdges } = await getElementsLayout(
-  //       nodes,
-  //       edges,
-  //       elkOptions
-  //     );
-  //     return { elementNodes, elementEdges };
-  //   }
+  async function convertEdgesToElk(originalEdges: any[]): Promise<any[]> {
+      return originalEdges.map((edge) => ({
+        id: edge[0],
+        container: 'my-canvas',
+        source: getSource(edge[1]),
+        target: edge[0],
+      }));
+  }
 
-  //   async function init() {
-  //     console.log('init')
-  //         const { elementNodes: elkNodes, elementEdges: elkEdges } =
-  //         await getFullTrajectoryNodes();
-  //         console.log('elkNodes: ', elkNodes, 'elkEdges: ', elkEdges);
-  //     // $svelvetNodes = elkNodes;
-  //     // $svelvetEdges = elkEdges;
-  //     // console.log('nodes: ', $nodesStore, 'edges: ', $edgesStore);
-  //   }
+  async function getElementsLayout(
+    nodes: any[],
+    edges: any[],
+    options: LayoutOptions
+  ): Promise<{ nodes: ElkNode[]; edges: ElkExtendedEdge[] }> {
+    const convertedEdges = await convertEdgesToElk(edges);
+    const transformedNodes = nodes.map((node) => ({
+      ...node,
+      children: node.data.children ?? [],
+      layoutOptions: options,
+    }));
+    const graph = {
+      id: 'my-canvas',
+      layoutOptions: options,
+      children: transformedNodes,
+      edges: convertedEdges,
+    };
+    const elkGraph = await elk.layout(graph);
+    const elkChildren = elkGraph.children ?? [];
+    const flattenedArray = flattenArray(elkChildren, 'children').map(
+      (node: ElkNode) => ({
+        ...node,
+        position: { x: node.x, y: node.y },
+      })
+    );
+    return {
+      nodes: flattenedArray,
+      edges: elkGraph.edges ?? [],
+    };
+  }
+
+  async function getFullTrajectoryNodes() {
+    const { nodes: elementNodes } = await getElementsLayout(
+      firstNodes,
+      firstEdges,
+      elkOptions
+    );
+    return { elementNodes };
+  }
+
+  async function init() {
+    const { elementNodes: elkNodes } = await getFullTrajectoryNodes();
+    nodes = elkNodes;
+    edges = $svelvetEdges;
+  }
 
   function onEdgeDrop(event: CustomEvent) {
     if (event.type !== 'edgeDrop') return;
@@ -138,12 +141,10 @@
   }
 
   $: {
-    nodes = $svelvetNodes;
-    edges = $svelvetEdges;
-    // if (nodes && edges) init();
+    firstNodes = $svelvetNodes;
+    firstEdges = $svelvetEdges;
+    if (firstNodes && firstEdges) init();
   }
-
-  // $: console.log('nodes: ', nodes, 'edges: ', edges)
 </script>
 
 <Svelvet
@@ -155,7 +156,14 @@
   zoom={0.4}
   on:edgeDrop={onEdgeDrop}
 >
-  <Minimap borderColor={"rgba(255,255,255,0)"} width={1880} height={200} corner={'NW'} slot="minimap" nodeColor={'rgb(0,0,0)'} />
+  <Minimap
+    borderColor={'rgba(255,255,255,0)'}
+    width={1880}
+    height={200}
+    corner={'NW'}
+    slot="minimap"
+    nodeColor={'rgb(0,0,0)'}
+  />
   <!-- (n) => {
      if (n.type === EnumNodeTypes.trajectory) return 'rgba(0, 150, 0, 0.75)';
      else if (n.type === EnumNodeTypes.phase) return 'rgb(220,20,60)';

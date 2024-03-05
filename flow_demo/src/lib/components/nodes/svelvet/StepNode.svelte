@@ -10,11 +10,10 @@
   let connections: Connections = [];
 
   onMount(() => {
-    // getEdges($svelvetEdges);
+    getEdges($svelvetEdges);
   });
 
   async function getEdges(edges: any) {
-    console.log('checking edges');
     for (let edge of edges) {
       if (edge[1].includes(`anchor-${node.id}-`)) {
         connections.push(edge);
@@ -26,15 +25,15 @@
   //     getEdges(edges);
   //   });
 
-  $: edges = $svelvetEdges;
-  $: getEdges(edges);
+  // $: edges = $svelvetEdges;
+  // $: getEdges(edges);
 </script>
 
 <Node
   id={node.id}
   let:grabHandle
   let:selected
-  position={{ x: 250 * (parseInt(node.id) - 1), y: 400 }}
+  position={{ x: node.position.x, y: node.position.y }}
   locked
 >
   <div

@@ -65,7 +65,7 @@
       children: node.data.children ?? [],
       layoutOptions: options,
     }));
-    console.log('transformedNodes: ', transformedNodes)
+    // console.log('transformedNodes: ', transformedNodes)
     const graph = {
       id: 'root',
       layoutOptions: options,
