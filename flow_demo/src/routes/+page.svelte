@@ -24,16 +24,21 @@
   let trajectoryEdges: Edge[];
 
   onMount(async () => {
-    const { trajectoryObject: trajectoryObj, items: PhasesAndEvents, carouselItems } =
-      await extractionJSON.getTrajectoryFromJSON(IDBJson);
+    const { trajectoryObj, PhasesAndEvents, carouselItems, carouselData, nodes, edges } = await getData();
     trajectoryStore.set(trajectoryObj);
     itemsStore.set(PhasesAndEvents);
     items = carouselItems;
-    const { carouselData, nodes, edges } = await extraction.extractFullTrajectory(trajectoryObj, PhasesAndEvents);
     carouselDataStore.set(carouselData);
     trajectoryNodes = nodes;
     trajectoryEdges = edges;
   });
+
+  async function getData() {
+    const { trajectoryObject: trajectoryObj, items: PhasesAndEvents, carouselItems } =
+      await extractionJSON.getTrajectoryFromJSON(IDBJson);
+    const { carouselData, nodes, edges } = await extraction.extractFullTrajectory(trajectoryObj, PhasesAndEvents);
+    return { trajectoryObj, PhasesAndEvents, carouselItems, carouselData, nodes, edges };
+  }
 
   function onToggle() {
     toggleState = !toggleState;
