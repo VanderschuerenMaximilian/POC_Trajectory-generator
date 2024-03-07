@@ -56,9 +56,9 @@
   <section>
     <SvelteFlowProvider>
         {#if toggleState}
-          {#key $activeCarouselItemName}
+          <!-- {#key $activeCarouselItemName} -->
             <Flow />
-          {/key}
+          <!-- {/key} -->
         {:else}
           <FullTrajectFlow {trajectoryNodes} {trajectoryEdges}/>
         {/if}

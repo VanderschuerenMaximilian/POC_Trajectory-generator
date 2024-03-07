@@ -14,6 +14,8 @@
     MiniMap,
     type NodeTypes,
     useSvelteFlow,
+    useNodes,
+    useNodesInitialized,
   } from '@xyflow/svelte';
   // 👇 this is important! You need to import the styles for Svelte Flow to work
   import '@xyflow/svelte/dist/style.css';
@@ -23,13 +25,15 @@
   import type { ITrajectoryObject } from './../types';
   import OwnStepNode from './nodes/OwnStepNode.svelte';
   import DragAndDropMenu from './general/DragAndDropMenu.svelte';
+  import ElkExtraction from '$lib/utilClasses/ElkNodes';
 
+  const elkExtraction = new ElkExtraction();
   const flowMethods = new FlowMethods();
   const snapGrid: [number, number] = [10, 10];
   const nodeTypes: NodeTypes = {
     stepNode: OwnStepNode,
   };
-  const { screenToFlowPosition } = useSvelteFlow();
+  const { screenToFlowPosition, setCenter, setZoom } = useSvelteFlow();
 
   let trajectory: ITrajectoryObject;
   let connectingId: string;
@@ -40,19 +44,35 @@
 
   async function getData(activeItemName: string) {
     // @ts-expect-error
-    $nodesStore = $carouselDataStore[activeItemName].nodes;
+    const nodes = $carouselDataStore[activeItemName]?.nodes;
     // @ts-expect-error
-    $edgesStore = $carouselDataStore[activeItemName].edges;
+    const edges = $carouselDataStore[activeItemName]?.edges;
+    const { nodes: elkNodes, edges: elkEdges } =
+      await elkExtraction.getBoxLayout(nodes, edges);
+    // @ts-expect-error
+    $nodesStore = elkNodes;
+    // @ts-expect-error
+    $edgesStore = elkEdges;
+    const middleNode = Math.floor($nodesStore.length / 2);
+    console.log(middleNode);
+    setCenter(
+      $nodesStore[middleNode].position.x,
+      $nodesStore[middleNode].position.y
+    );
+    setZoom(0.5);
   }
 
   function onEdgeDrop(event: MouseEvent | TouchEvent) {
     const result = flowMethods.onEdgeDrop(
       event,
       connectingId,
+      $nodesStore.length,
+      $activeCarouselItemName,
       screenToFlowPosition
     );
-    $nodesStore = [...$nodesStore, result?.newNode];
-    $edgesStore = [...$edgesStore, result?.newEdge];
+    if (!result) return;
+    $nodesStore = [...$nodesStore, result.newNode];
+    $edgesStore = [...$edgesStore, result.newEdge];
   }
 
   function onDragOver(event: DragEvent) {
@@ -63,6 +83,7 @@
     const newNode = flowMethods.onDrop(
       event,
       $nodesStore.length,
+      $activeCarouselItemName,
       screenToFlowPosition
     );
     $nodesStore = [...$nodesStore, newNode];
@@ -81,6 +102,7 @@
   $: getData($activeCarouselItemName);
 </script>
 
+<!-- {#key $activeCarouselItemName} -->
 <SvelteFlow
   nodes={nodesStore}
   edges={edgesStore}
@@ -104,3 +126,4 @@
   <DragAndDropMenu />
   <MiniMap />
 </SvelteFlow>
+<!-- {/key} -->

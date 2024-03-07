@@ -1,22 +1,30 @@
+import type { IEdge, IStepNode } from "$lib/components/types";
+import { TrajectoryColors } from "$lib/enum";
 import { type Edge, type Node } from "@xyflow/svelte";
 
 const MIN_DISTANCE: number = 550;
 
 export default class FlowMethods {
-    onEdgeDrop(event: MouseEvent | TouchEvent, connectingId: string, screenToFlowPosition: Function) {
+    onEdgeDrop(event: MouseEvent | TouchEvent, connectingId: string, amountOfNodes: number, activeCarouselItem: string, screenToFlowPosition: Function) {
         if (!connectingId) return;
         const targetIsPane = (event.target as Element).classList.contains(
         'svelte-flow__pane'
         );
         if (!targetIsPane) return;
-        const newNodeId = (parseInt(connectingId) + 1).toString();
-        const newNode: any = {
+        const newNodeId = (amountOfNodes + 1).toString();
+        const newStepNode: IStepNode = {
+            phaseName: activeCarouselItem,
+            step: {
+                name: `StepNode ${newNodeId}`,
+                description: `StepNode ${newNodeId}`,
+                concept: { domain_name: 'Episode' },
+            },
+            color: TrajectoryColors.step,
+        }
+        const newNode: Node = {
             id: newNodeId,
             type: 'stepNode',
-            data: {
-                label: `Step ${newNodeId}`,
-                description: `Step ${newNodeId}`,
-            },
+            data: newStepNode,
             position: screenToFlowPosition({
                 // @ts-expect-error
                 x: event?.clientX,
@@ -25,8 +33,7 @@ export default class FlowMethods {
             }),
             origin: [0, 0],
         };
-
-        const newEdge: any = {
+        const newEdge: IEdge = {
             id: crypto.randomUUID(),
             source: connectingId,
             target: newNodeId,
@@ -45,7 +52,7 @@ export default class FlowMethods {
         return event;
     }
 
-    onDrop(event: DragEvent, amountOfNodes: number, screenToFlowPosition: Function) {
+    onDrop(event: DragEvent, amountOfNodes: number, activeCarouselItem: string, screenToFlowPosition: Function) {
         event.preventDefault();
 
         if (!event.dataTransfer) return null;
@@ -55,12 +62,20 @@ export default class FlowMethods {
             x: event.clientX,
             y: event.clientY,
         });
-
+        const newStepNode: IStepNode = {
+            phaseName: activeCarouselItem,
+            step: {
+                name: `StepNode ${amountOfNodes + 1}`,
+                description: `StepNode ${amountOfNodes + 1}`,
+                concept: { domain_name: 'Episode' },
+            },
+            color: TrajectoryColors.step,
+        }
         const newNode: any = {
             id: `${amountOfNodes + 1}`,
             type,
             position,
-            data: { label: `StepNode ${amountOfNodes + 1}` },
+            data: newStepNode,
             origin: [0, 0],
         };
 
@@ -75,7 +90,6 @@ export default class FlowMethods {
             if (edgeAlreadyExists) return;
 
             if (closestEdge) {
-                // non-temporary edge already exists
                 if (
                 edge.source === closestEdge.source &&
                 edge.target === closestEdge.target
@@ -117,7 +131,7 @@ export default class FlowMethods {
     private getClosestEdge(node: Node, nodes: Node[]) {
         const closestNode = nodes.reduce((res, n) => {
             if (
-                n.id !== node.id && parseInt(node.id) - 1 === parseInt(n.id) &&
+                n.id !== node.id && 
                 n.computed?.positionAbsolute && node.computed?.positionAbsolute
             ) {
                 const dx = n.computed?.positionAbsolute.x - node.computed?.positionAbsolute.x;

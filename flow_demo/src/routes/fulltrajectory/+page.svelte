@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
   import FullTrajectFlow from '$lib/components/FullTrajectFlow.svelte';
   import Header from '$lib/components/general/Header.svelte';
   import { SvelteFlowProvider } from '@xyflow/svelte';
@@ -25,7 +25,6 @@
 </script>
 
 <main>
-  <!-- this is to replace the header the current application has -->
   <div style="opacity: 0;">
     <Header {items} />
   </div>
@@ -45,4 +44,4 @@
     height: 82vh;
     outline: 1px solid black;
   }
-</style>
+</style> -->

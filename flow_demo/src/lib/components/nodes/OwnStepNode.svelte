@@ -46,7 +46,6 @@
   positionAbsoluteY;
   // TODO: make interfaces for the own/custom nodes
   export let data: any;
-
   let foldStep = false;
   let foldDatapoint = false;
   let node: any;
@@ -134,7 +133,7 @@
   {/if}
   <Handle id="right" type="source" position={Position.Right} />
   <div class="header">
-    <h1 class="title">{data.step.name}</h1>
+    <h1 class="title">{data?.step?.name}</h1>
     <button class="header__button" on:click={foldChilds}>
       <ChevronDown
         size="24"
@@ -158,10 +157,10 @@
         </label>
       </div>
       <div>
-        <p>{data.step.description}</p>
-        <p>{data.step.concept.domain_name}</p>
-        <p>{data.step.date_range_before}</p>
-        <p>{data.step.date_range_after}</p>
+        <p>{data?.step?.description}</p>
+        <p>{data?.step?.concept.domain_name}</p>
+        <p>{data?.step?.date_range_before}</p>
+        <p>{data?.step?.date_range_after}</p>
         <label for="{id}-repeat">
           <span>repeat</span>
           <input type="checkbox" id="{id}-repeat" disabled />
@@ -186,9 +185,9 @@
         </button>
       </div>
       <div style={foldDatapoint ? 'display: none' : ''}>
-        {#if data.step.datapoints && data?.step.datapoints.length > 0}
-          {#each data?.step.datapoints as datapoint, i}
-            <Datapoint {datapoint} step={data.step} />
+        {#if data?.step?.datapoints && data?.step?.datapoints.length > 0}
+          {#each data?.step?.datapoints as datapoint, i}
+            <Datapoint {datapoint} step={data?.step} />
           {/each}
         {:else}
           There are no datapoints.

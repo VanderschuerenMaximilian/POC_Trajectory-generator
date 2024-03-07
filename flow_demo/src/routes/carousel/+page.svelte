@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
   import Flow from '$lib/components/Flow.svelte';
   import Header from '$lib/components/general/Header.svelte';
   import { SvelteFlowProvider } from '@xyflow/svelte';
@@ -46,4 +46,4 @@
   section {
     height: 68vh;
   }
-</style>
+</style> -->

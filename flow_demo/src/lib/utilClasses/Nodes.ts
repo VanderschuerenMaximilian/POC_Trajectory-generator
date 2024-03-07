@@ -84,8 +84,8 @@ export default class Extraction {
     private assignNodeToCarousel(node: Node, childs: any): void {
         const parentName = node.data.phaseName?  node.data.phaseName : node.data.eventName
         if (childs && node.data.step) node.data.step.datapoints = childs
-        node.position = { x: this.position.x, y: this.position.y}
-        this.changePosition()
+        // node.position = { x: this.position.x, y: this.position.y}
+        // this.changePosition()
         // TODO: Can I make this type safe?
         // @ts-expect-error
         this.carouselItemsData[parentName].nodes = [...this.carouselItemsData[parentName].nodes, node]
