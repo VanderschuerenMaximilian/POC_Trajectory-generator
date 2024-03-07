@@ -57,7 +57,7 @@
     $edgesStore = elkEdges;
   }
 
-  $: trajectory = $trajectoryStore;
+  // $: trajectory = $trajectoryStore;
   $: if (trajectoryNodes && trajectoryEdges) init();
 </script>
 

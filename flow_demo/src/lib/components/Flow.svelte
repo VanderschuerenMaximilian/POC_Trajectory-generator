@@ -24,7 +24,6 @@
   import OwnStepNode from './nodes/OwnStepNode.svelte';
   import DragAndDropMenu from './general/DragAndDropMenu.svelte';
   import ElkExtraction from '$lib/utilClasses/ElkNodes';
-  import { browser } from '$app/environment';
 
   const elkExtraction = new ElkExtraction();
   const flowMethods = new FlowMethods();
@@ -97,7 +96,7 @@
     $edgesStore = [...edges];
   }
 
-  $: if (browser) getData($activeCarouselItemName);
+  $: getData($activeCarouselItemName);
 </script>
 
 {#key $activeCarouselItemName}
@@ -117,7 +116,6 @@
     on:nodedragstop={onNodeDragStop}
     nodesDraggable={true}
   >
-    <!-- on:nodeclick={(e) => console.log(e.detail.node)} -->
     <Controls />
     <Background gap={[20, 20]} variant={BackgroundVariant.Dots} />
     <TrajectroyPanel {trajectory} />

@@ -113,7 +113,6 @@
 
   $: validateConnections($sourceConnections)
   $: validateConnections($targetConnections)
-  $: console.log(selected)
 </script>
 
 {#if data}

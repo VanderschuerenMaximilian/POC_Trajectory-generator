@@ -17,14 +17,22 @@
   import Extraction from '$lib/utilClasses/Nodes';
 
   const extractionJSON = new JsonExtraction();
-  const extraction= new Extraction();
+  const extraction = new Extraction();
   let items: ICarouselItem[] = [];
   let toggleState: boolean = false;
   let trajectoryNodes: Node[];
   let trajectoryEdges: Edge[];
+  let header: HTMLDivElement;
 
   onMount(async () => {
-    const { trajectoryObj, PhasesAndEvents, carouselItems, carouselData, nodes, edges } = await getData();
+    const {
+      trajectoryObj,
+      PhasesAndEvents,
+      carouselItems,
+      carouselData,
+      nodes,
+      edges,
+    } = await getData();
     trajectoryStore.set(trajectoryObj);
     itemsStore.set(PhasesAndEvents);
     items = carouselItems;
@@ -34,40 +42,53 @@
   });
 
   async function getData() {
-    const { trajectoryObject: trajectoryObj, items: PhasesAndEvents, carouselItems } =
-      await extractionJSON.getTrajectoryFromJSON(IDBJson);
-    const { carouselData, nodes, edges } = await extraction.extractFullTrajectory(trajectoryObj, PhasesAndEvents);
-    return { trajectoryObj, PhasesAndEvents, carouselItems, carouselData, nodes, edges };
+    const {
+      trajectoryObject: trajectoryObj,
+      items: PhasesAndEvents,
+      carouselItems,
+    } = await extractionJSON.getTrajectoryFromJSON(IDBJson);
+    const { carouselData, nodes, edges } =
+      await extraction.extractFullTrajectory(trajectoryObj, PhasesAndEvents);
+    return {
+      trajectoryObj,
+      PhasesAndEvents,
+      carouselItems,
+      carouselData,
+      nodes,
+      edges,
+    };
   }
 
   function onToggle() {
     toggleState = !toggleState;
   }
+
+  $: mainHeight = `calc(100vh - (${header?.clientHeight}px + 46px))`;
 </script>
 
-<div style="opacity: 0;">
-  <Header {items} />
+<div bind:this={header}>
+  <div style="opacity: 0;">
+    <Header {items} />
+  </div>
+  <ToggleConcepten on:toggle={onToggle} />
 </div>
-<ToggleConcepten on:toggle={onToggle} />
-<main>
+<main style="height: {mainHeight? mainHeight: '72vh'};">
   {#if toggleState}
     <Header {items} />
   {/if}
   <section>
     <SvelteFlowProvider>
-        {#if toggleState}
-            <Flow />
-        {:else}
-          <FullTrajectFlow {trajectoryNodes} {trajectoryEdges}/>
-        {/if}
+      {#if toggleState}
+        <Flow />
+      {:else}
+        <FullTrajectFlow {trajectoryNodes} {trajectoryEdges} />
+      {/if}
     </SvelteFlowProvider>
   </section>
 </main>
 
 <style scoped>
   main {
-    /* TODO: 100vh - the existing header height */
-    height: 72vh;
     display: flex;
     flex-direction: column;
   }
