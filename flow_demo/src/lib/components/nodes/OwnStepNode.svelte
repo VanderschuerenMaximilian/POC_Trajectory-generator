@@ -6,6 +6,8 @@
     useSvelteFlow,
     Handle,
     NodeResizeControl,
+    useHandleConnections,
+    type Edge,
   } from '@xyflow/svelte';
   import { ChevronDown, Plus } from 'lucide-svelte';
   import { onMount } from 'svelte';
@@ -13,6 +15,7 @@
   import EditStepDialog from '../dialogs/EditStepDialog.svelte';
   import DeleteStepDialog from '../dialogs/DeleteStepDialog.svelte';
   import AddDatapointDialog from '../dialogs/AddDatapointDialog.svelte';
+  import { edges, edges as edgesStore } from '$lib/store';	
 
   type $$Props = NodeProps;
 
@@ -60,9 +63,11 @@
     if (node)
       (initalWidth = node.clientWidth), (initialHeight = node.clientHeight);
   });
-
+  
   const { fitView } = useSvelteFlow();
-
+  const sourceConnections = useHandleConnections({ nodeId: id, type: 'source' });
+  const targetConnections = useHandleConnections({ nodeId: id, type: 'target' });
+  
   function foldChilds() {
     foldStep = !foldStep;
   }
@@ -83,17 +88,32 @@
     addDatapointDialog.showModal();
   }
 
+  // TODO: refactor so each node could use this function
   function zoomIn() {
     fitView({ nodes: [{ id: id }], duration: 600, padding: 1 });
   }
 
+  // TODO: refactor so each node could use this function
   function assignKeyboardFeatures() {
-    node.addEventListener('click', (event: PointerEvent) => {
+    node.addEventListener('click', (event: any) => {
       if (event?.altKey) {
         zoomIn();
       }
     });
   }
+
+  // TODO: refactor so each node could use this function
+  function validateConnections(currentConnections: any[]) {
+    if (!currentConnections[1]) return
+    const notValidConnection = $edgesStore[$edgesStore.length - 1].id === currentConnections[1].edgeId
+    if (notValidConnection) {
+      $edgesStore = $edgesStore.slice(0, $edgesStore.length - 1)
+    }
+  }
+
+  $: validateConnections($sourceConnections)
+  $: validateConnections($targetConnections)
+  $: console.log(selected)
 </script>
 
 {#if data}
@@ -244,6 +264,7 @@
     overflow: hidden;
     padding-bottom: 12px;
     height: 95%;
+    text-align: start;
   }
 
   .header {

@@ -14,8 +14,6 @@
     MiniMap,
     type NodeTypes,
     useSvelteFlow,
-    useNodes,
-    useNodesInitialized,
   } from '@xyflow/svelte';
   // 👇 this is important! You need to import the styles for Svelte Flow to work
   import '@xyflow/svelte/dist/style.css';
@@ -26,6 +24,7 @@
   import OwnStepNode from './nodes/OwnStepNode.svelte';
   import DragAndDropMenu from './general/DragAndDropMenu.svelte';
   import ElkExtraction from '$lib/utilClasses/ElkNodes';
+  import { browser } from '$app/environment';
 
   const elkExtraction = new ElkExtraction();
   const flowMethods = new FlowMethods();
@@ -54,7 +53,6 @@
     // @ts-expect-error
     $edgesStore = elkEdges;
     const middleNode = Math.floor($nodesStore.length / 2);
-    console.log(middleNode);
     setCenter(
       $nodesStore[middleNode].position.x,
       $nodesStore[middleNode].position.y
@@ -71,8 +69,8 @@
       screenToFlowPosition
     );
     if (!result) return;
-    $nodesStore = [...$nodesStore, result.newNode];
-    $edgesStore = [...$edgesStore, result.newEdge];
+    $nodesStore.push(result.newNode);
+    $edgesStore.push(result.newEdge);
   }
 
   function onDragOver(event: DragEvent) {
@@ -86,7 +84,7 @@
       $activeCarouselItemName,
       screenToFlowPosition
     );
-    $nodesStore = [...$nodesStore, newNode];
+    $nodesStore.push(newNode);
   }
 
   function onNodeDrag({ detail: { node } }: any) {
@@ -99,10 +97,9 @@
     $edgesStore = [...edges];
   }
 
-  $: getData($activeCarouselItemName);
+  $: if (browser) getData($activeCarouselItemName);
 </script>
 
-<!-- {#key $activeCarouselItemName} -->
 <SvelteFlow
   nodes={nodesStore}
   edges={edgesStore}
@@ -126,4 +123,3 @@
   <DragAndDropMenu />
   <MiniMap />
 </SvelteFlow>
-<!-- {/key} -->

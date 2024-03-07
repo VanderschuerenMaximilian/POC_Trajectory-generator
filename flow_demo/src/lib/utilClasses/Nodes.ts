@@ -26,7 +26,7 @@ export default class Extraction {
         const { id: trajectoryId, version_number, episode_object } = trajectory
         const specifics: ITrajectoryNode = { id: trajectoryId, version_number, episode_object, color: TrajectoryColors.trajectory } 
         const node = await this.assembleNode(TrajectoryNodeTypes.trajectory, specifics)
-        this.nodes = [...this.nodes, node]
+        this.nodes.push(node)
         for (const step of items) await this.extractNodes(step, node.id)
         await this.assembleEdgesForCarouselData()
         return { nodes: this.nodes, edges: this.edges, carouselData: this.carouselItemsData }
@@ -84,8 +84,6 @@ export default class Extraction {
     private assignNodeToCarousel(node: Node, childs: any): void {
         const parentName = node.data.phaseName?  node.data.phaseName : node.data.eventName
         if (childs && node.data.step) node.data.step.datapoints = childs
-        // node.position = { x: this.position.x, y: this.position.y}
-        // this.changePosition()
         // TODO: Can I make this type safe?
         // @ts-expect-error
         this.carouselItemsData[parentName].nodes = [...this.carouselItemsData[parentName].nodes, node]
@@ -96,7 +94,7 @@ export default class Extraction {
         // this.changePositionFullTrajectory(type)
         const baseConfig = { id, type, position: this.position }
         const node: Node = { ...baseConfig, ...{ data: specifics }, ...nodeConfig }
-        this.nodes = [...this.nodes, node]
+        this.nodes.push(node)
         if (type === TrajectoryNodeTypes.step || type === TrajectoryNodeTypes.option) {
             if (childs) this.assignNodeToCarousel(node, childs)
         }
@@ -124,7 +122,7 @@ export default class Extraction {
 
     private assembleEdge(parentId: string, id: string): void {
         const edge: Edge = { id: crypto.randomUUID(), source: parentId, target: id, type: 'step' }
-        this.edges = [...this.edges, edge]
+        this.edges.push(edge)
     }
 
     private async assembleNode(type: string, specifics: any): Promise<Node> {
@@ -139,12 +137,12 @@ export default class Extraction {
         return node
     }
 
-    private async changePosition() {
-        if (this.position.x > 1000) this.position = { x: 0, y: this.position.y + 350 }
-        else {
-            this.position = { x: this.position.x + 350, y: this.position.y }
-        }
-    }
+    // private async changePosition() {
+    //     if (this.position.x > 1000) this.position = { x: 0, y: this.position.y + 350 }
+    //     else {
+    //         this.position = { x: this.position.x + 350, y: this.position.y }
+    //     }
+    // }
 
     private reset(): void {
         this.position = { x: 0, y: 0 };

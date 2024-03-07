@@ -61,7 +61,7 @@
   $: if (trajectoryNodes && trajectoryEdges) init();
 </script>
 
-{#key trajectory}
+<!-- {#key trajectory} -->
 <SvelteFlow
   nodes={nodesStore}
   edges={edgesStore}
@@ -99,4 +99,4 @@
     ariaLabel={'Mini map of the flow diagram.'}
   />
 </SvelteFlow>
-{/key}
+<!-- {/key} -->

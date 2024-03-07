@@ -37,10 +37,10 @@
   positionAbsoluteY;
   export let data: IPhaseNode;
 
-  let typeOfObj = data.phase.type;
+  let typeOfObject = data.phase.type;
   let name = data.phase.name;
 
-  $: info = { name, typeOfObj };
+  $: info = { name, typeOfObject };
 </script>
 
 {#if data}

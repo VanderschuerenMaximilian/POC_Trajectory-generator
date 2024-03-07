@@ -56,14 +56,14 @@ export default class SvelvetExtraction {
 
     private assembleEdge(parentId:string, target: string) {
         const edge = [target, `anchor-${parentId}-${target}`]
-        this.edges = [...this.edges, edge]
+        this.edges.push(edge)
     }
 
     private async assembleNodeAndReturnId(type: string, color: string, specifics: any) {
         const data = {...specifics, color: color}
         const id = this.getNodeId()
         const node = { id, type: type, data}
-        this.nodes = [...this.nodes, node]
+        this.nodes.push(node)
         return id
     }
 

@@ -2,7 +2,7 @@ import type { IEdge, IStepNode } from "$lib/components/types";
 import { TrajectoryColors } from "$lib/enum";
 import { type Edge, type Node } from "@xyflow/svelte";
 
-const MIN_DISTANCE: number = 550;
+const MIN_DISTANCE: number = 450;
 
 export default class FlowMethods {
     onEdgeDrop(event: MouseEvent | TouchEvent, connectingId: string, amountOfNodes: number, activeCarouselItem: string, screenToFlowPosition: Function) {
