@@ -12,10 +12,11 @@
     BackgroundVariant,
     MiniMap,
     type NodeTypes,
+    type Node,
+    type Edge,
   } from '@xyflow/svelte';
   // 👇 this is important! You need to import the styles for Svelte Flow to work
   import '@xyflow/svelte/dist/style.css';
-  import Extraction from '$lib/utilClasses/Nodes';
   import ElkExtraction from '$lib/utilClasses/ElkNodes';
   import StepNode from './nodes/StepNode.svelte';
   import TrajectoryNode from './nodes/TrajectoryNode.svelte';
@@ -25,7 +26,9 @@
   import OptionNode from './nodes/OptionNode.svelte';
   import { TrajectoryColors, TrajectoryNodeTypes } from '$lib/enum';
 
-  const extraction = new Extraction();
+  export let trajectoryNodes: Node[];
+  export let trajectoryEdges: Edge[];
+
   const elkExtraction = new ElkExtraction();
   const snapGrid: [number, number] = [25, 25];
   const nodeTypes: NodeTypes = {
@@ -38,11 +41,9 @@
   };
 
   async function getFullTrajectoryNodes() {
-    const { nodes: flatNodes, edges: flatEdges } =
-      await extraction.extractFullTrajectory(trajectory, items);
     const { nodes: elkNodes, edges: elkEdges } = await elkExtraction.getTreeLayout(
-      flatNodes,
-      flatEdges
+      trajectoryNodes,
+      trajectoryEdges
     );
     return { nodes: elkNodes, edges: elkEdges };
   }
@@ -57,8 +58,7 @@
   }
 
   $: trajectory = $trajectoryStore;
-  $: items = $itemsStore;
-  $: if (trajectory && items) init();
+  $: if (trajectoryNodes && trajectoryEdges) init();
 </script>
 
 {#key trajectory}

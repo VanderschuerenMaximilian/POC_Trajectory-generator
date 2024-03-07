@@ -2,7 +2,7 @@
   import Flow from '$lib/components/Flow.svelte';
   import FullTrajectFlow from '$lib/components/FullTrajectFlow.svelte';
   import Header from '$lib/components/general/Header.svelte';
-  import { SvelteFlowProvider } from '@xyflow/svelte';
+  import { SvelteFlowProvider, type Node, type Edge } from '@xyflow/svelte';
   import { onMount } from 'svelte';
   import IDBJson from '$lib/data/IBD_Crohn_Disease.json';
   import {
@@ -20,6 +20,8 @@
   const extraction= new Extraction();
   let items: ICarouselItem[] = [];
   let toggleState: boolean = false;
+  let trajectoryNodes: Node[];
+  let trajectoryEdges: Edge[];
 
   onMount(async () => {
     const { trajectoryObject: trajectoryObj, items: PhasesAndEvents, carouselItems } =
@@ -27,8 +29,10 @@
     trajectoryStore.set(trajectoryObj);
     itemsStore.set(PhasesAndEvents);
     items = carouselItems;
-    const { carouselData } = await extraction.extractFullTrajectory(trajectoryObj, PhasesAndEvents);
+    const { carouselData, nodes, edges } = await extraction.extractFullTrajectory(trajectoryObj, PhasesAndEvents);
     carouselDataStore.set(carouselData);
+    trajectoryNodes = nodes;
+    trajectoryEdges = edges;
   });
 
   function onToggle() {
@@ -51,7 +55,7 @@
             <Flow />
           {/key}
         {:else}
-          <FullTrajectFlow />
+          <FullTrajectFlow {trajectoryNodes} {trajectoryEdges}/>
         {/if}
     </SvelteFlowProvider>
   </section>
