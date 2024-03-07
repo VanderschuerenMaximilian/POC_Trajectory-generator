@@ -1,9 +1,8 @@
 <script>
   import { Handle, Position } from '@xyflow/svelte';
-  import NodeOptions from '../nodes/Node';
-
-  const nodeOptions = new NodeOptions();
-  const styling = `width: 18px; height: 18px; background-color: ${nodeOptions.handleColors.trajectory}; border: none;`;
+  import { TrajectoryColors } from '$lib/enum';
+  
+  const styling = `width: 18px; height: 18px; background-color: ${TrajectoryColors.trajectory}; border: none;`;
 </script>
 
 <Handle

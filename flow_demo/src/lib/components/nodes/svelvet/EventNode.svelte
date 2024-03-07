@@ -2,12 +2,12 @@
   import { onMount } from 'svelte';
   import { Node, Anchor, type Connections } from 'svelvet';
   import { svelvetEdges } from '$lib/store';
-  import NodeOptions from '../Node';
+  import NodeCustomization from '../Node';
 
   export let node: any;
   export let i: any;
 
-  const nodeOptions = new NodeOptions();
+  const nodeCustomization = new NodeCustomization();
   let connections: Connections = [];
 
   onMount(async () => {
@@ -33,7 +33,7 @@
     <div class="output">
       <Anchor id="anchor-{node.id}" output direction={"south"} {connections}/>
     </div>
-    <h1>{nodeOptions.capatalizeFirstLetter(node.data.event.name)}</h1>
+    <h1>{nodeCustomization.capatalizeFirstLetter(node.data.event.name)}</h1>
   </div>
 </Node>
 

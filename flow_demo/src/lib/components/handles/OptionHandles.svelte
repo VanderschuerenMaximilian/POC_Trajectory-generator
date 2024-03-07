@@ -1,10 +1,8 @@
 <script>
   import { Handle, Position } from '@xyflow/svelte';
-  import NodeOptions from '../nodes/Node';
+  import { TrajectoryColors } from '$lib/enum';
 
-  const nodeOptions = new NodeOptions();
-
-  const styling = `width: 18px; height: 18px; background-color: ${nodeOptions.handleColors.option}; border: none;`;
+  const styling = `width: 18px; height: 18px; background-color: ${TrajectoryColors.option}; border: none;`;
 </script>
 
 <Handle id="stepTop" style={styling} type="target" position={Position.Top} />

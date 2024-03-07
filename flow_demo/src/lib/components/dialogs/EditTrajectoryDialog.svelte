@@ -1,9 +1,9 @@
 <script lang="ts">
   import { createEventDispatcher, onMount } from 'svelte';
   import Dialog from '../radar-svelete-components/components/Dialog.svelte';
-  import type { ITrajectoryObj } from '../types';
+  import type { ITrajectoryObject } from '../../types';
 
-  export let trajectoryObj: ITrajectoryObj;
+  export let trajectoryObject: ITrajectoryObject;
   export let dialog: HTMLDialogElement;
 
   // let editObj: ITrajectoryObj;
@@ -25,29 +25,29 @@
 </script>
 
 <Dialog bind:dialog height="65%" width="50%">
-  {#if trajectoryObj}
+  {#if trajectoryObject}
     <div class="container">
-      <h3 class="title">{trajectoryObj.title}</h3>
+      <h3 class="title">{trajectoryObject.episode_object.name}</h3>
       <form class="content">
         <div class="form-group">
           <label for="id">Id*</label>
-          <input type="text" id="id" bind:value={trajectoryObj.id} />
+          <input type="text" id="id" bind:value={trajectoryObject.id} />
         </div>
         <div class="form-group">
           <label for="version">Version Number*</label>
-          <input type="text" id="version" bind:value={trajectoryObj.version} />
+          <input type="text" id="version" bind:value={trajectoryObject.version_number} />
         </div>
         <div class="form-group">
           <label for="domain">Domain*</label>
-          <select id="domain" bind:value={trajectoryObj.domain} />
+          <select id="domain" bind:value={trajectoryObject.episode_object.concept.domain_name} />
         </div>
         <div class="form-group">
           <label for="name">Name*</label>
-          <input type="text" id="name" bind:value={trajectoryObj.title} />
+          <input type="text" id="name" bind:value={trajectoryObject.episode_object.name} />
         </div>
         <div class="form-group">
           <label for="description">Description*</label>
-          <textarea id="description" bind:value={trajectoryObj.description} />
+          <textarea id="description" bind:value={trajectoryObject.episode_object.description} />
         </div>
         <button on:click={cancel}> Cancel </button>
         <button on:click={save}> Save </button>

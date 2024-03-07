@@ -1,8 +1,9 @@
 <script lang="ts">
   import type { NodeProps } from '@xyflow/svelte';
-  import NodeOptions from './Node';
+  import { TrajectoryColors } from '$lib/enum';
   import DatapointHandles from '../handles/DatapointHandles.svelte';
   import DefaultNode from './DefaultNode.svelte';
+  import type { IDatapointNode } from '../types';
 
   type $$Props = NodeProps;
 
@@ -34,9 +35,8 @@
   export let positionAbsoluteY: $$Props['positionAbsoluteY'] | undefined =
     undefined;
   positionAbsoluteY;
-  export let data: any;
+  export let data: IDatapointNode;
 
-  const nodeOptions = new NodeOptions();
   let domain = data.datapoint.concept.domain_name;
   let name = data.datapoint.name;
 
@@ -44,6 +44,6 @@
 </script>
 
 {#if data}
-  <DefaultNode color={nodeOptions.colors.datapoint} {info} />
+  <DefaultNode color={TrajectoryColors.datapoint} {info} />
   <DatapointHandles />
 {/if}

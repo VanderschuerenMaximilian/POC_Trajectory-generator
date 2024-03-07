@@ -1,12 +1,12 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-  import type { IEvent, IPhase } from '../types';
-  import { activeItem } from '$lib/store';
+  import type { IMainItemJSON, ICarouselItem } from '../../types';
+  import { activeCarouselItemName } from '$lib/store';
 
   export let i: number;
-  export let item: IPhase | IEvent;
+  export let item: ICarouselItem;
 
-  let selectedItem: IPhase | IEvent;
+  let selectedName: string;
 
   const dispatch = createEventDispatcher();
 
@@ -14,17 +14,17 @@
     dispatch('onSubNavClick', i);
   }
 
-  $: selectedItem = $activeItem;
+  $: selectedName = $activeCarouselItemName;
 </script>
 
 <button
   id={i.toString()}
   on:click={handleClick}
   class="{item.type === 'event' ? 'event' : 'phase'}
-  {item.name === selectedItem.name && item.type === 'event'
+  {item.name === selectedName && item.type === 'event'
     ? 'event_active'
     : ''}
-{item.name === selectedItem.name && item.type === 'phase' ? 'phase_active' : ''}
+{item.name === selectedName && item.type === 'phase' ? 'phase_active' : ''}
   "
 >
   {item.name.charAt(0).toUpperCase() + item.name.charAt(1)}

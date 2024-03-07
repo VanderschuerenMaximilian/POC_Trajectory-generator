@@ -13,7 +13,6 @@
   import EditStepDialog from '../dialogs/EditStepDialog.svelte';
   import DeleteStepDialog from '../dialogs/DeleteStepDialog.svelte';
   import AddDatapointDialog from '../dialogs/AddDatapointDialog.svelte';
-  import type { IStepNode } from './types';
 
   type $$Props = NodeProps;
 
@@ -45,7 +44,8 @@
   export let positionAbsoluteY: $$Props['positionAbsoluteY'] | undefined =
     undefined;
   positionAbsoluteY;
-  export let data: IStepNode;
+  // TODO: make interfaces for the own/custom nodes
+  export let data: any;
 
   let foldStep = false;
   let foldDatapoint = false;
@@ -134,7 +134,7 @@
   {/if}
   <Handle id="right" type="source" position={Position.Right} />
   <div class="header">
-    <h1 class="title">{data.label}</h1>
+    <h1 class="title">{data.step.name}</h1>
     <button class="header__button" on:click={foldChilds}>
       <ChevronDown
         size="24"
@@ -158,10 +158,10 @@
         </label>
       </div>
       <div>
-        <p>{data.description}</p>
-        <p>{data.domain}</p>
-        <p>{data.date_range_before}</p>
-        <p>{data.date_range_after}</p>
+        <p>{data.step.description}</p>
+        <p>{data.step.concept.domain_name}</p>
+        <p>{data.step.date_range_before}</p>
+        <p>{data.step.date_range_after}</p>
         <label for="{id}-repeat">
           <span>repeat</span>
           <input type="checkbox" id="{id}-repeat" disabled />
@@ -186,9 +186,9 @@
         </button>
       </div>
       <div style={foldDatapoint ? 'display: none' : ''}>
-        {#if data.datapoints && data?.datapoints.length > 0}
-          {#each data?.datapoints as datapoint, i}
-            <Datapoint {datapoint} step={data} />
+        {#if data.step.datapoints && data?.step.datapoints.length > 0}
+          {#each data?.step.datapoints as datapoint, i}
+            <Datapoint {datapoint} step={data.step} />
           {/each}
         {:else}
           There are no datapoints.
@@ -238,9 +238,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* justify-content: space-between; */
     max-width: 320px;
-    /* min-width: 220px; */
     background-color: #d9d9d9;
     border-radius: 15px;
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
@@ -287,7 +285,6 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    /* justify-content: start; */
     gap: 1rem;
   }
 

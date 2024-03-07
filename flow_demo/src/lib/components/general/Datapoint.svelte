@@ -1,10 +1,10 @@
 <script lang="ts">
   import EditDatapointDialog from '../dialogs/EditDatapointDialog.svelte';
-  import type { IStepNode } from '../nodes/types';
-  import type { IDatapoint } from '../types';
+  import type { IStepNode } from '../types';
+  import type { IDatapointJSON } from '../../types';
 
   export let step: IStepNode;
-  export let datapoint: IDatapoint;
+  export let datapoint: IDatapointJSON;
 
   let dialog: HTMLDialogElement;
 

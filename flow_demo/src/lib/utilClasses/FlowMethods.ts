@@ -57,7 +57,7 @@ export default class FlowMethods {
         });
 
         const newNode: any = {
-            id: `${amountOfNodes}`,
+            id: `${amountOfNodes + 1}`,
             type,
             position,
             data: { label: `StepNode ${amountOfNodes + 1}` },

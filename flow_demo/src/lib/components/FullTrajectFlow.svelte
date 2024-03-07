@@ -4,7 +4,6 @@
     edges as edgesStore,
     items as itemsStore,
     trajectory as trajectoryStore,
-    nodes,
   } from '$lib/store';
   import {
     SvelteFlow,
@@ -13,37 +12,21 @@
     BackgroundVariant,
     MiniMap,
     type NodeTypes,
-    type Edge,
-    type Node,
-    ConnectionLineType,
   } from '@xyflow/svelte';
   // 👇 this is important! You need to import the styles for Svelte Flow to work
   import '@xyflow/svelte/dist/style.css';
   import Extraction from '$lib/utilClasses/Nodes';
+  import ElkExtraction from '$lib/utilClasses/ElkNodes';
   import StepNode from './nodes/StepNode.svelte';
-  import type { ITrajectory } from './types';
   import TrajectoryNode from './nodes/TrajectoryNode.svelte';
   import PhaseNode from './nodes/PhaseNode.svelte';
   import EventNode from './nodes/EventNode.svelte';
   import DatapointNode from './nodes/DatapointNode.svelte';
   import OptionNode from './nodes/OptionNode.svelte';
-  import ELK, {
-    type ElkExtendedEdge,
-    type ElkNode,
-    type LayoutOptions,
-  } from 'elkjs';
-  import { flattenArray } from '$lib/utils';
-  import NodeOptions from './nodes/Node';
+  import { TrajectoryColors, TrajectoryNodeTypes } from '$lib/enum';
 
-  const elk = new ELK();
-  const elkOptions: LayoutOptions = {
-    'elk.algorithm': 'mrtree',
-    // 'elk.layered.spacing.nodeNodeBetweenLayers': '80',
-    'elk.spacing.nodeNode': '280',
-    'elk.direction': 'DOWN',
-  };
   const extraction = new Extraction();
-  const nodeOptions = new NodeOptions();
+  const elkExtraction = new ElkExtraction();
   const snapGrid: [number, number] = [25, 25];
   const nodeTypes: NodeTypes = {
     trajectoryNode: TrajectoryNode,
@@ -54,56 +37,22 @@
     optionNode: OptionNode,
   };
 
-  async function getElementsLayout(
-    nodes: Node[],
-    edges: Edge[],
-    options: LayoutOptions
-  ): Promise<{ nodes: ElkNode[]; edges: ElkExtendedEdge[] }> {
-    // console.log('nodes: ', nodes, 'edges: ', edges)
-    const transformedNodes = nodes.map((node) => ({
-      ...node,
-      children: node.data.children ?? [],
-      layoutOptions: options,
-    }));
-    // console.log('transformedNodes: ', transformedNodes)
-    const graph = {
-      id: 'root',
-      layoutOptions: options,
-      children: transformedNodes,
-      edges,
-    };
-    // @ts-expect-error This is a Typescript error in the ElkJS & Svelte-flow package, the types don't match but work together
-    const elkGraph = await elk.layout(graph);
-    const elkChildren = elkGraph.children ?? [];
-    const flattenedArray = flattenArray(elkChildren, 'children').map(
-      (node: ElkNode) => ({
-        ...node,
-        position: { x: node.x, y: node.y },
-      })
-    );
-    return {
-      nodes: flattenedArray,
-      edges: elkGraph.edges ?? [],
-    };
-  }
-
   async function getFullTrajectoryNodes() {
     const { nodes: flatNodes, edges: flatEdges } =
       await extraction.extractFullTrajectory(trajectory, items);
-    const { nodes, edges } = await getElementsLayout(
+    const { nodes: elkNodes, edges: elkEdges } = await elkExtraction.getTreeLayout(
       flatNodes,
-      flatEdges,
-      elkOptions
+      flatEdges
     );
-    return { nodes, edges };
+    return { nodes: elkNodes, edges: elkEdges };
   }
 
   async function init() {
     const { nodes: elkNodes, edges: elkEdges } =
       await getFullTrajectoryNodes();
-    // @ts-expect-error This is a Typescript error in the ElkJS & Svelte-flow package, the types don't match but work together
+    // @ts-expect-error
     $nodesStore = elkNodes;
-    // @ts-expect-error This is a Typescript error in the ElkJS & Svelte-flow package, the types don't match but work together
+    // @ts-expect-error
     $edgesStore = elkEdges;
   }
 
@@ -127,13 +76,22 @@
     width={1000}
     position={'top-center'}
     nodeColor={(n) => {
-      if (n.type === 'trajectoryNode') return nodeOptions.colors.trajectory;
-      else if (n.type === 'phaseNode') return nodeOptions.colors.phase;
-      else if (n.type === 'eventNode') return nodeOptions.colors.event;
-      else if (n.type === 'stepNode') return nodeOptions.colors.step;
-      else if (n.type === 'optionNode') return nodeOptions.colors.option;
-      else if (n.type === 'datapointNode') return nodeOptions.colors.datapoint;
-      else return 'black';
+      switch (n.type) {
+        case TrajectoryNodeTypes.trajectory:
+          return TrajectoryColors.trajectory;
+        case TrajectoryNodeTypes.phase:
+          return TrajectoryColors.phase;
+        case TrajectoryNodeTypes.event:
+          return TrajectoryColors.event;
+        case TrajectoryNodeTypes.step:
+          return TrajectoryColors.step;
+        case TrajectoryNodeTypes.option:
+          return TrajectoryColors.option;
+        case TrajectoryNodeTypes.datapoint:
+          return TrajectoryColors.datapoint;
+        default:
+          return 'black';
+      }
     }}
     zoomable={true}
     zoomStep={20}

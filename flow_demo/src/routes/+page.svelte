@@ -9,21 +9,26 @@
     trajectory as trajectoryStore,
     items as itemsStore,
     activeItem,
+    carouselData as carouselDataStore,
   } from '$lib/store';
-  import type { IPhase, IEvent } from '$lib/components/types';
+  import type { IPhaseJSON, IEventJSON, ICarouselItem } from '$lib/types';
   import JsonExtraction from '$lib/utilClasses/Json';
   import ToggleConcepten from '$lib/components/general/ToggleConcepten.svelte';
+  import Extraction from '$lib/utilClasses/Nodes';
 
-  const extraction = new JsonExtraction();
-  let items: (IPhase | IEvent)[] = [];
+  const extractionJSON = new JsonExtraction();
+  const extraction= new Extraction();
+  let items: ICarouselItem[] = [];
   let toggleState: boolean = false;
 
   onMount(async () => {
-    const { trajectory: trajectoryObj, items: PhasesAndEvents } =
-      await extraction.getTrajectory(IDBJson);
+    const { trajectoryObject: trajectoryObj, items: PhasesAndEvents, carouselItems } =
+      await extractionJSON.getTrajectoryFromJSON(IDBJson);
     trajectoryStore.set(trajectoryObj);
     itemsStore.set(PhasesAndEvents);
-    items = PhasesAndEvents;
+    items = carouselItems;
+    const { carouselData } = await extraction.extractFullTrajectory(trajectoryObj, PhasesAndEvents);
+    carouselDataStore.set(carouselData);
   });
 
   function onToggle() {
@@ -41,13 +46,13 @@
   {/if}
   <section>
     <SvelteFlowProvider>
-      {#if toggleState}
-        {#key $activeItem}
-          <Flow />
-        {/key}
-      {:else}
-        <FullTrajectFlow />
-      {/if}
+        {#if toggleState}
+          {#key $activeItem}
+            <Flow />
+          {/key}
+        {:else}
+          <FullTrajectFlow />
+        {/if}
     </SvelteFlowProvider>
   </section>
 </main>

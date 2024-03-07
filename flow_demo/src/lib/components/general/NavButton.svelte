@@ -1,9 +1,9 @@
 <script lang="ts">
-  import type { IPhase, IEvent } from '../types';
+  import type { ICarouselItem } from '../../types';
   import { createEventDispatcher } from 'svelte';
 
   export let i: number;
-  export let item: IPhase | IEvent;
+  export let item: ICarouselItem;
 
   const dispatch = createEventDispatcher();
 

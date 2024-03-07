@@ -12,16 +12,16 @@
     svelvetNodes,
     svelvetEdges,
   } from '$lib/store';
-  import type { IPhase, IEvent } from '$lib/components/types';
+  import type { IMainItemsJSON } from '$lib/types';
 
   const extraction = new JsonExtraction();
   const svelvetExtraction = new SvelvetExtraction();
-  let items: (IPhase | IEvent)[] = [];
+  let items: IMainItemsJSON = [];
   let toggleState: boolean = false;
 
   onMount(async () => {
-    const { trajectory: trajectoryObj, items: PhasesAndEvents } =
-      await extraction.getTrajectory(IDBJson);
+    const { trajectoryObject: trajectoryObj, items: PhasesAndEvents } =
+      await extraction.getTrajectoryFromJSON(IDBJson);
     trajectoryStore.set(trajectoryObj);
     itemsStore.set(PhasesAndEvents);
     items = PhasesAndEvents;

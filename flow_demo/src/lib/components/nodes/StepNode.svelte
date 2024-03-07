@@ -1,8 +1,9 @@
 <script lang="ts">
   import type { NodeProps } from '@xyflow/svelte';
-  import NodeOptions from './Node';
+  import { TrajectoryColors } from '$lib/enum';
   import StepHandles from '../handles/StepHandles.svelte';
   import DefaultNode from './DefaultNode.svelte';
+  import type { IStepNode } from '../types';
 
   type $$Props = NodeProps;
 
@@ -34,9 +35,8 @@
   export let positionAbsoluteY: $$Props['positionAbsoluteY'] | undefined =
     undefined;
   positionAbsoluteY;
-  export let data: any;
+  export let data: IStepNode;
 
-  const nodeOptions = new NodeOptions();
   let domain = data.step.concept.domain_name;
   let name = data.step.name;
 
@@ -44,6 +44,6 @@
 </script>
 
 {#if data}
-  <DefaultNode color={nodeOptions.colors.step} {info} />
+  <DefaultNode color={TrajectoryColors.step} {info} />
   <StepHandles />
 {/if}

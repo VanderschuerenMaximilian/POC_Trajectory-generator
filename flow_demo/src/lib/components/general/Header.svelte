@@ -1,12 +1,12 @@
 <script lang="ts">
-  import type { IEvent, IPhase } from '../types';
+  import type { IMainItemsJSON, ICarouselItem } from '../../types';
   import NavButton from './NavButton.svelte';
   import SubNavButton from './SubNavButton.svelte';
   import { onMount } from 'svelte';
-  import { activeItem } from '$lib/store';
+  import { activeCarouselItemName } from '$lib/store';
   import { ChevronLeft, ChevronRight } from 'lucide-svelte';
 
-  export let items: (IPhase | IEvent)[];
+  export let items: ICarouselItem[] = [];
 
   let carouselList: HTMLUListElement | null;
   let carouselItems: HTMLCollection;
@@ -14,7 +14,6 @@
 
   onMount(async () => {
     if (carouselList) carouselItems = carouselList?.children;
-    $activeItem = items[active];
   });
 
   function onNavClick(event: any) {
@@ -46,16 +45,6 @@
     const secondRight = elems.find((elem: any) => elem.dataset.pos == 2);
     const thirdLeft = elems.find((elem: any) => elem.dataset.pos == -3);
     const thirdRight = elems.find((elem: any) => elem.dataset.pos == 3);
-
-    // console.log({
-    //   0: current?.innerText,
-    //   1: firstRight?.innerText,
-    //   2: secondRight?.innerText,
-    //   3: thirdRight?.innerText,
-    //   4: thirdLeft?.innerText,
-    //   5: secondLeft?.innerText,
-    //   6: firstLeft?.innerText,
-    // });
 
     current?.classList.remove('carousel__item_active');
 
@@ -133,7 +122,7 @@
     // } else return diff;
   }
 
-  function assignIndex(items: (IPhase | IEvent)[], index: number): number {
+  function assignIndex(items: ICarouselItem[], index: number): number {
     // TODO: make clean code of this
     if (index + 3 === items.length) {
       return -3;
@@ -174,7 +163,7 @@
     active = event.detail;
   }
 
-  $: $activeItem = items[active];
+  $: $activeCarouselItemName = items[active]?.name;
 </script>
 
 <header>

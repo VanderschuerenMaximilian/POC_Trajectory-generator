@@ -1,28 +1,17 @@
 <script lang="ts">
-  import { Svelvet, Minimap, Drawer, ThemeToggle } from 'svelvet';
+  import { Svelvet, Minimap } from 'svelvet';
   import TrajectoryNode from '$lib/components/nodes/svelvet/TrajectoryNode.svelte';
   import PhaseNode from '$lib/components/nodes/svelvet/PhaseNode.svelte';
   import EventNode from '$lib/components/nodes/svelvet/EventNode.svelte';
   import StepNode from './nodes/svelvet/StepNode.svelte';
   import { svelvetNodes, svelvetEdges } from '$lib/store';
-  import { EnumNodeTypes, EnumNodeColors } from '$lib/utilClasses/SvelvetNodes';
-  import {
-    type LayoutOptions,
-    type ElkNode,
-    type ElkExtendedEdge,
-  } from 'elkjs';
-  import { flattenArray } from '$lib/utils';
-  import ELK from 'elkjs';
+  import { TrajectoryColors, TrajectoryTypes } from '$lib/enum';
+  import ElkExtraction from '$lib/utilClasses/ElkNodes';
   import OptionNode from './nodes/svelvet/OptionNode.svelte';
   import DatapointNode from './nodes/svelvet/DatapointNode.svelte';
   import DragAndDrop from './general/svelvet/DragAndDrop.svelte';
 
-  const elk = new ELK();
-  const elkOptions: LayoutOptions = {
-    'elk.algorithm': 'mrtree',
-    'elk.spacing.nodeNode': '260',
-    'elk.direction': 'DOWN',
-  };
+  const elkExtraction = new ElkExtraction();
   let nodes: any = [];
   let edges: any = [];
   let firstNodes: any = [];
@@ -42,43 +31,9 @@
       }));
   }
 
-  async function getElementsLayout(
-    nodes: any[],
-    edges: any[],
-    options: LayoutOptions
-  ): Promise<{ nodes: ElkNode[]; edges: ElkExtendedEdge[] }> {
-    const convertedEdges = await convertEdgesToElk(edges);
-    const transformedNodes = nodes.map((node) => ({
-      ...node,
-      children: node.data.children ?? [],
-      layoutOptions: options,
-    }));
-    const graph = {
-      id: 'my-canvas',
-      layoutOptions: options,
-      children: transformedNodes,
-      edges: convertedEdges,
-    };
-    const elkGraph = await elk.layout(graph);
-    const elkChildren = elkGraph.children ?? [];
-    const flattenedArray = flattenArray(elkChildren, 'children').map(
-      (node: ElkNode) => ({
-        ...node,
-        position: { x: node.x, y: node.y },
-      })
-    );
-    return {
-      nodes: flattenedArray,
-      edges: elkGraph.edges ?? [],
-    };
-  }
-
   async function getFullTrajectoryNodes() {
-    const { nodes: elementNodes } = await getElementsLayout(
-      firstNodes,
-      firstEdges,
-      elkOptions
-    );
+    const convertedEdges = await convertEdgesToElk(firstEdges);
+    const { nodes: elementNodes } = await elkExtraction.getTreeLayout(firstNodes, convertedEdges);
     return { elementNodes };
   }
 
@@ -112,38 +67,35 @@
       newNodeId.toString(),
       `anchor-${sourceNode.id}-${newNodeId}`,
     ];
-    nodes = [...nodes, newNode];
-    // edges.push(newEdge);
-    edges = [...edges, newEdge];
+    nodes.push(newNode);
+    edges.push(newEdge);
   }
 
-  function determineType(sourceType: EnumNodeTypes): {
-    type: EnumNodeTypes;
-    color: EnumNodeColors;
+  function determineType(sourceType: TrajectoryTypes): {
+    type: TrajectoryTypes;
+    color: TrajectoryColors;
   } {
     switch (sourceType) {
-      case EnumNodeTypes.phase:
-        return { type: EnumNodeTypes.step, color: EnumNodeColors.step };
-      case EnumNodeTypes.event:
-        return { type: EnumNodeTypes.option, color: EnumNodeColors.option };
-      case EnumNodeTypes.step:
+      case TrajectoryTypes.phase:
+        return { type: TrajectoryTypes.step, color: TrajectoryColors.step };
+      case TrajectoryTypes.event:
+        return { type: TrajectoryTypes.option, color: TrajectoryColors.option };
+      case TrajectoryTypes.step:
         return {
-          type: EnumNodeTypes.datapoint,
-          color: EnumNodeColors.datapoint,
+          type: TrajectoryTypes.datapoint,
+          color: TrajectoryColors.datapoint,
         };
       default:
         return {
-          type: EnumNodeTypes.datapoint,
-          color: EnumNodeColors.datapoint,
+          type: TrajectoryTypes.datapoint,
+          color: TrajectoryColors.datapoint,
         };
     }
   }
 
-  $: {
-    firstNodes = $svelvetNodes;
-    firstEdges = $svelvetEdges;
-    if (firstNodes && firstEdges) init();
-  }
+  $: firstNodes = $svelvetNodes;
+  $: firstEdges = $svelvetEdges;
+  $: if (firstNodes && firstEdges) init();
 </script>
 
 <Svelvet
@@ -175,17 +127,17 @@
   <!-- <DragAndDrop /> -->
   {#if nodes}
     {#each nodes as node, i}
-      {#if node.type === EnumNodeTypes.trajectory}
+      {#if node.type === TrajectoryTypes.trajectory}
         <TrajectoryNode {node} {i} />
-      {:else if node.type === EnumNodeTypes.phase}
+      {:else if node.type === TrajectoryTypes.phase}
         <PhaseNode {node} {i} />
-      {:else if node.type === EnumNodeTypes.event}
+      {:else if node.type === TrajectoryTypes.event}
         <EventNode {node} {i} />
-      {:else if node.type === EnumNodeTypes.step}
+      {:else if node.type === TrajectoryTypes.step}
         <StepNode {node} {i} />
-      {:else if node.type === EnumNodeTypes.option}
+      {:else if node.type === TrajectoryTypes.option}
         <OptionNode {node} {i} />
-      {:else if node.type === EnumNodeTypes.datapoint}
+      {:else if node.type === TrajectoryTypes.datapoint}
         <DatapointNode {node} {i} />
       {/if}
     {/each}

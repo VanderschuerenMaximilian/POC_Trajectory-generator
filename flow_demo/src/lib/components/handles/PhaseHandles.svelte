@@ -1,11 +1,9 @@
 <script>
   import { Handle, Position } from '@xyflow/svelte';
-  import NodeOptions from '../nodes/Node';
-
-  const nodeOptions = new NodeOptions();
+  import { TrajectoryColors } from '$lib/enum';
 
   const styling =
-    `width: 18px; height: 18px; background-color: ${nodeOptions.handleColors.phase}; border: none;`;
+    `width: 18px; height: 18px; background-color: ${TrajectoryColors.phase}; border: none;`;
 </script>
 
 <Handle id="phaseTop" style={styling} type="target" position={Position.Top} />

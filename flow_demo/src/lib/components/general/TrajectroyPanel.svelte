@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { ITrajectory } from '../types';
+  import type { ITrajectoryObject } from '../../types';
   import { Panel } from '@xyflow/svelte';
   import { ChevronLeft, Pen } from 'lucide-svelte';
   import EditTrajectoryDialog from '../dialogs/EditTrajectoryDialog.svelte';
 
-  export let trajectory: ITrajectory;
+  export let trajectory: ITrajectoryObject;
 
   let fold = false;
   let dialog: HTMLDialogElement;
@@ -20,10 +20,10 @@
 
 {#if trajectory}
   {@const trajectoryObj = {
-    id: trajectory.id,
+    id: trajectory.id.toString(),
     title: trajectory.episode_object.name,
     description: trajectory.episode_object.description,
-    version: trajectory.version,
+    version: trajectory.version_number,
     domain: trajectory.episode_object.concept.domain_name,
   }}
   <EditTrajectoryDialog bind:dialog {trajectoryObj} />
@@ -49,7 +49,7 @@
         <div class="body">
           <p>{trajectory?.episode_object.description}</p>
         </div>
-        <p class="version">{trajectory?.version}</p>
+        <p class="version">{trajectory?.version_number}</p>
       {/if}
       <button on:click={foldPanel} class="fold__button">
         <ChevronLeft

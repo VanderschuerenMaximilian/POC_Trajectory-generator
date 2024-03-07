@@ -1,8 +1,9 @@
 <script lang="ts">
   import type { NodeProps } from '@xyflow/svelte';
   import PhaseHandles from '../handles/PhaseHandles.svelte';
-  import NodeOptions from './Node';
+  import { TrajectoryColors } from '$lib/enum';
   import DefaultNode from './DefaultNode.svelte';
+  import type { IPhaseNode } from '../types';
 
   type $$Props = NodeProps;
 
@@ -34,17 +35,15 @@
   export let positionAbsoluteY: $$Props['positionAbsoluteY'] | undefined =
     undefined;
   positionAbsoluteY;
-  export let data: any;
+  export let data: IPhaseNode;
 
   let typeOfObj = data.phase.type;
   let name = data.phase.name;
-
-  const nodeOptions = new NodeOptions();
 
   $: info = { name, typeOfObj };
 </script>
 
 {#if data}
-  <DefaultNode color={nodeOptions.colors.phase} {info} />
+  <DefaultNode color={TrajectoryColors.phase} {info} />
   <PhaseHandles />
 {/if}

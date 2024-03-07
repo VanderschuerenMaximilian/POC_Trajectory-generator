@@ -1,24 +1,25 @@
 <script lang="ts">
-  import NodeOptions from './Node';
+  import { TrajectoryTypes } from '$lib/enum';
+  import NodeCustomization from './Node';
 
   export let color = '';
-  export let info: any;
+  export let info: { name: string, domain?: string, typeOfObject?: string };
 
-  const nodeOptions = new NodeOptions();
+  const nodeCustomization = new NodeCustomization();
 </script>
 
 <div
   class="container__node"
-  style="background-color: {color}; {info.typeOfObj === 'event'
+  style="background-color: {color}; {info.typeOfObject === TrajectoryTypes.event
     ? 'border-radius:50px'
     : ''}"
 >
-  <h1>{nodeOptions.capatalizeFirstLetter(info.name)}</h1>
+  <h1>{nodeCustomization.capatalizeFirstLetter(info.name)}</h1>
   {#if info.domain}
-    <p>Concept: {nodeOptions.capatalizeFirstLetter(info.domain)}</p>
+    <p>Concept: {nodeCustomization.capatalizeFirstLetter(info.domain)}</p>
   {/if}
-  {#if info.typeOfObj}
-    <p>Type: {nodeOptions.capatalizeFirstLetter(info.typeOfObj)}</p>
+  {#if info.typeOfObject}
+    <p>Type: {nodeCustomization.capatalizeFirstLetter(info.typeOfObject)}</p>
   {/if}
 </div>
 

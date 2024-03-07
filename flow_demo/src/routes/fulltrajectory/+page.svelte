@@ -8,15 +8,15 @@
     trajectory as trajectoryStore,
     items as itemsStore,
   } from '$lib/store';
-  import type { IPhase, IEvent } from '$lib/components/types';
+  import type { IMainItemsJSON } from '$lib/types';
   import JsonExtraction from '$lib/utilClasses/Json';
 
   const extraction = new JsonExtraction();
-  let items: (IPhase | IEvent)[] = [];
+  let items: IMainItemsJSON = [];
 
   onMount(async () => {
-    const { trajectory: trajectoryObj, items: PhasesAndEvents } =
-      await extraction.getTrajectory(IDBJson);
+    const { trajectoryObject: trajectoryObj, items: PhasesAndEvents } =
+      await extraction.getTrajectoryFromJSON(IDBJson);
 
     $trajectoryStore = trajectoryObj;
     $itemsStore = PhasesAndEvents;

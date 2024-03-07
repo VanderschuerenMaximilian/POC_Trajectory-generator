@@ -1,11 +1,11 @@
 <script lang="ts">
   import { Node, Anchor, Resizer } from 'svelvet';
-  import NodeOptions from '../Node';
+  import NodeCustomization from '../Node';
 
   export let node: any;
   export let i: any;
 
-  const nodeOptions = new NodeOptions();
+  const nodeCustomization = new NodeCustomization();
 </script>
 
 <Node
@@ -29,7 +29,7 @@
         direction={"north"}
       />
     </div>
-    <h1>{nodeOptions.capatalizeFirstLetter(node.data.datapoint.name)}</h1>
+    <h1>{nodeCustomization.capatalizeFirstLetter(node.data.datapoint.name)}</h1>
   </div>
 </Node>
 

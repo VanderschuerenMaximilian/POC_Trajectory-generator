@@ -1,5 +1,6 @@
-import type { IStepNode } from "$lib/components/nodes/types";
-import type { IDatapoint, IEvent, IPhase, IStep, ITrajectory } from "$lib/components/types";
+import type { IStepNode, ICarouselData, IEventNode, IPhaseNode, ITrajectoryNode, IOptionNode, IOptionNodeLocation, IDataNodeLocation, IDatapointNode } from "$lib/components/types";
+import type { ITrajectoryObject, IDatapointJSON, IEventJSON, IPhaseJSON, IStepJSON, IMainItemsJSON, IMainItemJSON, IOptionJSON } from "$lib/types";
+import { TrajectoryTypes, TrajectoryNodeTypes, TrajectoryColors } from "$lib/enum";
 import { type XYPosition, type Node, type Edge, Position } from "@xyflow/svelte";
 
 const nodeConfig = { targetPosition: Position.Left, sourcePosition: Position.Right }
@@ -7,88 +8,70 @@ let count: number = 0;
 
 export default class Extraction {
     position: XYPosition = { x: 0, y: 0 };
-    // for full trajectory
     nodes: Node[] = [];
     edges: Edge[] = [];
-    // for header trajectory
-    steps: Node[] = [];
-    options: Node[] = [];
-    stepsEdges: Edge[] = [];
-    optionsEdges: Edge[] = [];
+    stringList: string[] = ['history', 'trigger', 'diagnostic', 'diagnose', 'treatment', 'outcome', 'follow-up'];
+    carouselItemsData: ICarouselData = {
+        history: { nodes: [], edges: []},
+        trigger: { nodes: [], edges: []},
+        diagnostic: { nodes: [], edges: []},
+        diagnose: { nodes: [], edges: []},
+        treatment: { nodes: [], edges: []},
+        outcome: { nodes: [], edges: []},
+        'follow-up': { nodes: [], edges: []},
+    }
 
-    async extractFullTrajectory(trajectory: ITrajectory, items: (IPhase|IEvent)[]): Promise<{ nodes: Node[]; edges: Edge[]}> {
+    async extractFullTrajectory(trajectory: ITrajectoryObject, items: IMainItemsJSON): Promise<{ nodes: Node[]; edges: Edge[], carouselData: ICarouselData }> {
         this.reset()
-        const { id: trajectoryId, version, episode_object } = trajectory
-        const specifics = { id: trajectoryId, version, episode_object } 
-        const node = await this.assembleNode('trajectoryNode', specifics)
+        const { id: trajectoryId, version_number, episode_object } = trajectory
+        const specifics: ITrajectoryNode = { id: trajectoryId, version_number, episode_object, color: TrajectoryColors.trajectory } 
+        const node = await this.assembleNode(TrajectoryNodeTypes.trajectory, specifics)
         this.nodes = [...this.nodes, node]
         for (const step of items) await this.extractNodes(step, node.id)
-        return { nodes: this.nodes, edges: this.edges }
+        await this.assembleEdgesForCarouselData()
+        return { nodes: this.nodes, edges: this.edges, carouselData: this.carouselItemsData }
     }
 
-    async extractSteps(steps: any) {
-        this.reset()
-        for (const step of steps) await this.assembleFlow('phase', step)
-        return { steps: this.steps, stepsEdges: this.stepsEdges }
+    private async extractNodes(item: IMainItemJSON, parentId: string): Promise<void> {
+        if (item.type === TrajectoryTypes.event) return await this.extractFromEvent(item as IEventJSON, parentId)
+        else return await this.extractFromPhase(item as IPhaseJSON, parentId)
     }
 
-    async extractOptions(options: any) {
-        this.reset()
-        for (const option of options) await this.assembleFlow('event', option)
-    }
-
-    // functions for full trajectory 
-
-    private async extractNodes(item: IEvent | IPhase, parentId: string) {
-        if (item.type === 'event') return await this.extractFromEvent(item as IEvent, parentId)
-        else return await this.extractFromPhase(item as IPhase, parentId)
-    }
-
-    private async extractFromEvent(event: IEvent, parentId: string) {
-        // TODO: make event node interface
+    private async extractFromEvent(event: IEventJSON, parentId: string): Promise<void> {
         const { options, ...eventInfo } = event
-        const specificInfo: any = { event: eventInfo }
-        const id = this.assembleNodeAndReturnId('eventNode', specificInfo)
+        const specificInfo: IEventNode = { event: eventInfo, color: TrajectoryColors.event}
+        const id = this.assembleNodeAndReturnId(TrajectoryNodeTypes.event, specificInfo)
         this.assembleEdge(parentId, id)
         for (const opt of event.options) await this.extractFromOption(opt, id, event.name)
     }
 
-    private async extractFromPhase(phase: IPhase, parentId: string) {
-        // TODO: make phase node interface
+    private async extractFromPhase(phase: IPhaseJSON, parentId: string): Promise<void> {
         const { steps, ...phaseInfo } = phase
-        const specificInfo: any = { phase: phaseInfo }
-        const id = this.assembleNodeAndReturnId('phaseNode', specificInfo)
+        const specificInfo: IPhaseNode = { phase: phaseInfo, color: TrajectoryColors.phase }
+        const id = this.assembleNodeAndReturnId(TrajectoryNodeTypes.phase, specificInfo)
         this.assembleEdge(parentId, id)
         for (const step of phase.steps) await this.extractFromStep(step, id, phase.name)
     }
 
-    private async extractFromStep(step: IStep, parentId: string, phaseName: string) {
-        // TODO: make step node interface
+    private async extractFromStep(step: IStepJSON, parentId: string, phaseName: string): Promise<void> {
         const { datapoints, ...stepInfo } = step
-        const specificInfo: any = { step: stepInfo, phaseName }
-        const id = this.assembleNodeAndReturnId('stepNode', specificInfo)
+        const specificInfo: IStepNode = { step: stepInfo, phaseName: phaseName, color: TrajectoryColors.step }
+        const id = this.assembleNodeAndReturnId(TrajectoryNodeTypes.step, specificInfo, datapoints)
         this.assembleEdge(parentId, id)
         for (const datapoint of step.datapoints) await this.extractFromDatapoint(datapoint, id, phaseName, step.name)
     }
 
-    private async extractFromOption(opt: any, parentId: string, eventName: string) {
-        const location: any = { eventName, option: opt, type: 'option' }
-        const specificInfo: any = { option: opt, location }
-        const id = this.assembleNodeAndReturnId('optionNode', specificInfo)
+    private async extractFromOption(opt: IOptionJSON, parentId: string, eventName: string): Promise<void> {
+        const location: IOptionNodeLocation = { option: opt, type: TrajectoryTypes.option, eventName }
+        const specificInfo: IOptionNode = { option: opt, location, eventName }
+        const id = this.assembleNodeAndReturnId(TrajectoryNodeTypes.option, specificInfo)
         this.assembleEdge(parentId, id)
     }
 
-    private async extractFromDatapoint(
-        dp: IDatapoint,
-        parentId: string,
-        phaseName: string,
-        stepName: string
-    ) {
-        // TODO: make datapointlocation interface
-        const location: any = { phaseName, stepName, datapoint: dp, type: 'datapoint' }
-        // TODO: make datapoint node interface
-        const specificInfo: any = { datapoint: dp, location }
-        const id = this.assembleNodeAndReturnId('datapointNode', specificInfo)
+    private async extractFromDatapoint(dp: IDatapointJSON, parentId: string, phaseName: string, stepName: string): Promise<void> {
+        const location: IDataNodeLocation = { phaseName, stepName, datapoint: dp, type: TrajectoryTypes.datapoint }
+        const specificInfo: IDatapointNode = { datapoint: dp, location }
+        const id = this.assembleNodeAndReturnId(TrajectoryNodeTypes.datapoint, specificInfo)
         this.assembleEdge(parentId, id)
     }
 
@@ -97,50 +80,51 @@ export default class Extraction {
         return count.toString()
     }
 
-    private assembleNodeAndReturnId(type: string, specifics: object): string {
+    // TODO: make a type for the child (right now it's only datapoints but who knows)
+    private assignNodeToCarousel(node: Node, childs: any): void {
+        const parentName = node.data.phaseName?  node.data.phaseName : node.data.eventName
+        if (childs && node.data.step) node.data.step.datapoints = childs
+        node.position = { x: this.position.x, y: this.position.y}
+        this.changePosition()
+        // TODO: Can I make this type safe?
+        // @ts-expect-error
+        this.carouselItemsData[parentName].nodes = [...this.carouselItemsData[parentName].nodes, node]
+    }
+
+    private assembleNodeAndReturnId(type: string, specifics: any, childs: any = []): string {
         const id = this.getNodeId()
-        this.changePositionFullTrajectory(type)
+        // this.changePositionFullTrajectory(type)
         const baseConfig = { id, type, position: this.position }
         const node: Node = { ...baseConfig, ...{ data: specifics }, ...nodeConfig }
         this.nodes = [...this.nodes, node]
+        if (type === TrajectoryNodeTypes.step || type === TrajectoryNodeTypes.option) {
+            if (childs) this.assignNodeToCarousel(node, childs)
+        }
         return id
     }
 
-    private assembleEdge(parentId: string, id: string): void {
-        const edge: Edge = { id: crypto.randomUUID(), source: parentId, target: id, type: 'step'}
-        this.edges = [...this.edges, edge]
-    }
-
-    // end of functions for full trajectory
-
-    // functions for header trajectory
-
-    private async assembleFlow(type: any, item: any) {
-        if (type === 'phase') {
-            await this.assembleStep(item)
-        } else if (type === 'event') {
-            await this.assembleOption(item)
+    private async assembleEdgesForCarouselData() {
+        let count = 0
+        for (const string of this.stringList) {
+            // @ts-expect-error
+            const nodes = this.carouselItemsData[string].nodes
+            for (const node of nodes) {
+                count++
+                if (nodes[count]) await this.assembleCarouselEdge(node.id, nodes[count].id, string)
+            }
+            count = 0
         }
-    }   
-
-    private async assembleStep(step: any) {
-        const specifics = {
-            label: step.name,
-            description: step.description,
-            date_range_before: step.date_range_before,
-            date_range_after: step.date_range_after,
-            repeat: step.repeat? step.repeat : null,
-            domain: step.concept.domain_name,
-            datapoints: step.datapoints,
-        } 
-        const node = await this.assembleNode('stepNode', specifics)
-        if (this.steps.length >= 1) this.assembleStepEdge((parseInt(node.id) - 1).toString(), node.id)
-        this.steps = [...this.steps, node]
     }
 
-    private async assembleOption(option: any) {
-        this.reset()
-        console.log('still working on function "assebleOption"')
+    private async assembleCarouselEdge(currentId: string, nextId: string, parentName: string){
+        const edge: Edge = { id: crypto.randomUUID(), source: currentId, target: nextId, type: 'step' }
+        // @ts-expect-error
+        this.carouselItemsData[parentName].edges = [...this.carouselItemsData[parentName].edges, edge]
+    }
+
+    private assembleEdge(parentId: string, id: string): void {
+        const edge: Edge = { id: crypto.randomUUID(), source: parentId, target: id, type: 'step' }
+        this.edges = [...this.edges, edge]
     }
 
     private async assembleNode(type: string, specifics: any): Promise<Node> {
@@ -152,8 +136,6 @@ export default class Extraction {
             dragHandle: '.header',
         }
         const node: Node = { ...baseConfig, ...{ data: specifics }, ...nodeConfig }
-        // this.position = { x: this.position.x + 350, y: this.position.y }
-        this.changePosition()
         return node
     }
 
@@ -164,31 +146,10 @@ export default class Extraction {
         }
     }
 
-    private async changePositionFullTrajectory(type: string) {
-        if (type === 'phaseNode' || type === 'eventNode') {
-            this.position = { x: this.position.x + 350, y: 350 }
-        } else if (type === 'stepNode') {
-            this.position = { x: this.position.x + 350, y: 700 }
-        } else if (type === 'datapointNode') {
-            this.position = { x: this.position.x + 350, y: 1050 }
-        }
-    }
-
-    private assembleStepEdge(parentId: any, targetId: any): void {
-        const edge: Edge = { id: crypto.randomUUID(), source: parentId, target: targetId, type: 'step' }
-        this.stepsEdges = [...this.stepsEdges, edge]
-    }
-
-    // end of functions for header trajectory
-
     private reset(): void {
         this.position = { x: 0, y: 0 };
         this.nodes = [];
         this.edges = [];
-        this.steps = [];
-        this.options = [];
-        this.stepsEdges = [];
-        this.optionsEdges = [];
         count = 0;
     }
 }

@@ -2,9 +2,9 @@
   import {
     nodes as nodesStore,
     edges as edgesStore,
-    activeItem,
-    items as itemsStore,
+    activeCarouselItemName,
     trajectory as trajectoryStore,
+    carouselData as carouselDataStore,
   } from '$lib/store';
   import {
     SvelteFlow,
@@ -18,14 +18,12 @@
   // 👇 this is important! You need to import the styles for Svelte Flow to work
   import '@xyflow/svelte/dist/style.css';
   import { onMount } from 'svelte';
-  import Extraction from '$lib/utilClasses/Nodes';
   import FlowMethods from '$lib/utilClasses/FlowMethods';
   import TrajectroyPanel from './general/TrajectroyPanel.svelte';
-  import type { ITrajectory } from './types';
+  import type { ITrajectoryObject } from './../types';
   import OwnStepNode from './nodes/OwnStepNode.svelte';
   import DragAndDropMenu from './general/DragAndDropMenu.svelte';
 
-  const extraction = new Extraction();
   const flowMethods = new FlowMethods();
   const snapGrid: [number, number] = [10, 10];
   const nodeTypes: NodeTypes = {
@@ -33,33 +31,26 @@
   };
   const { screenToFlowPosition } = useSvelteFlow();
 
-  let items: any = [];
-  let trajectory: ITrajectory;
+  let trajectory: ITrajectoryObject;
   let connectingId: string;
 
-  onMount(async () => {
-    if ($itemsStore.length && !$trajectoryStore) return;
-    items = $itemsStore;
+  onMount(() => {
     trajectory = $trajectoryStore;
   });
 
-  async function getChildren(parentNode: any) {
-    if (!parentNode) return;
-    else if (parentNode.type === 'phase') {
-      const { steps, stepsEdges } = await extraction.extractSteps(
-        parentNode.steps
-      );
-      $nodesStore = steps;
-      $edgesStore = stepsEdges;
-    } else if (parentNode.type === 'event') {
-      extraction.extractOptions(parentNode.options);
-      $nodesStore = [];
-      $edgesStore = [];
-    }
+  async function getData(activeItemName: string) {
+    // @ts-expect-error
+    $nodesStore = $carouselDataStore[activeItemName].nodes;
+    // @ts-expect-error
+    $edgesStore = $carouselDataStore[activeItemName].edges;
   }
 
   function onEdgeDrop(event: MouseEvent | TouchEvent) {
-    const result = flowMethods.onEdgeDrop(event, connectingId, screenToFlowPosition);
+    const result = flowMethods.onEdgeDrop(
+      event,
+      connectingId,
+      screenToFlowPosition
+    );
     $nodesStore = [...$nodesStore, result?.newNode];
     $edgesStore = [...$edgesStore, result?.newEdge];
   }
@@ -69,7 +60,11 @@
   }
 
   function onDrop(event: DragEvent) {
-    const newNode = flowMethods.onDrop(event, $nodesStore.length, screenToFlowPosition);
+    const newNode = flowMethods.onDrop(
+      event,
+      $nodesStore.length,
+      screenToFlowPosition
+    );
     $nodesStore = [...$nodesStore, newNode];
   }
 
@@ -83,7 +78,7 @@
     $edgesStore = [...edges];
   }
 
-  $: getChildren($activeItem);
+  $: getData($activeCarouselItemName);
 </script>
 
 <SvelteFlow
@@ -100,6 +95,7 @@
   on:drop={onDrop}
   on:nodedrag={onNodeDrag}
   on:nodedragstop={onNodeDragStop}
+  nodesDraggable={true}
 >
   <!-- on:nodeclick={(e) => console.log(e.detail.node)} -->
   <Controls />

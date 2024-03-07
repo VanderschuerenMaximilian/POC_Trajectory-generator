@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { IStepNode } from '../nodes/types';
+  import type { IStepNode } from '../types';
   import Dialog from '../radar-svelete-components/components/Dialog.svelte';
-  import type { IDatapoint } from '../types';
+  import type { IDatapointJSON } from '../../types';
 
   export let dialog: HTMLDialogElement;
-  export let datapoint: IDatapoint;
+  export let datapoint: IDatapointJSON;
   export let step: IStepNode;
 </script>
 
