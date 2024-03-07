@@ -100,26 +100,28 @@
   $: if (browser) getData($activeCarouselItemName);
 </script>
 
-<SvelteFlow
-  nodes={nodesStore}
-  edges={edgesStore}
-  {nodeTypes}
-  {snapGrid}
-  fitView={true}
-  onconnectstart={(_, { nodeId }) => {
-    if (nodeId) connectingId = nodeId;
-  }}
-  onconnectend={onEdgeDrop}
-  on:dragover={onDragOver}
-  on:drop={onDrop}
-  on:nodedrag={onNodeDrag}
-  on:nodedragstop={onNodeDragStop}
-  nodesDraggable={true}
->
-  <!-- on:nodeclick={(e) => console.log(e.detail.node)} -->
-  <Controls />
-  <Background gap={[20, 20]} variant={BackgroundVariant.Dots} />
-  <TrajectroyPanel {trajectory} />
-  <DragAndDropMenu />
-  <MiniMap />
-</SvelteFlow>
+{#key $activeCarouselItemName}
+  <SvelteFlow
+    nodes={nodesStore}
+    edges={edgesStore}
+    {nodeTypes}
+    {snapGrid}
+    fitView={true}
+    onconnectstart={(_, { nodeId }) => {
+      if (nodeId) connectingId = nodeId;
+    }}
+    onconnectend={onEdgeDrop}
+    on:dragover={onDragOver}
+    on:drop={onDrop}
+    on:nodedrag={onNodeDrag}
+    on:nodedragstop={onNodeDragStop}
+    nodesDraggable={true}
+  >
+    <!-- on:nodeclick={(e) => console.log(e.detail.node)} -->
+    <Controls />
+    <Background gap={[20, 20]} variant={BackgroundVariant.Dots} />
+    <TrajectroyPanel {trajectory} />
+    <DragAndDropMenu />
+    <MiniMap />
+  </SvelteFlow>
+{/key}
