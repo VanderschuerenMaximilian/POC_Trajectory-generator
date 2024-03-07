@@ -82,18 +82,20 @@ export default class Extraction {
 
     // TODO: make a type for the child (right now it's only datapoints but who knows)
     private assignNodeToCarousel(node: Node, childs: any): void {
-        const parentName = node.data.phaseName?  node.data.phaseName : node.data.eventName
-        if (childs && node.data.step) node.data.step.datapoints = childs
+        const carouselNode = { ...node }
+        const newType = carouselNode.type === TrajectoryNodeTypes.step? TrajectoryNodeTypes.ownStep : TrajectoryNodeTypes.ownOption
+        const parentName = carouselNode.data.phaseName?  carouselNode.data.phaseName : carouselNode.data.eventName
+        if (childs && carouselNode.data.step) carouselNode.data.step.datapoints = childs
+        carouselNode.type = newType
         // TODO: Can I make this type safe?
         // @ts-expect-error
-        this.carouselItemsData[parentName].nodes = [...this.carouselItemsData[parentName].nodes, node]
+        this.carouselItemsData[parentName].nodes.push(carouselNode)
     }
 
     private assembleNodeAndReturnId(type: string, specifics: any, childs: any = []): string {
         const id = this.getNodeId()
-        // this.changePositionFullTrajectory(type)
         const baseConfig = { id, type, position: this.position }
-        const node: Node = { ...baseConfig, ...{ data: specifics }, ...nodeConfig }
+        const node: Node = { ...baseConfig, data: { ...specifics }, ...nodeConfig }
         this.nodes.push(node)
         if (type === TrajectoryNodeTypes.step || type === TrajectoryNodeTypes.option) {
             if (childs) this.assignNodeToCarousel(node, childs)

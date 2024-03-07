@@ -7,7 +7,6 @@
     Handle,
     NodeResizeControl,
     useHandleConnections,
-    type Edge,
   } from '@xyflow/svelte';
   import { ChevronDown, Plus } from 'lucide-svelte';
   import { onMount } from 'svelte';
@@ -15,7 +14,7 @@
   import EditStepDialog from '../dialogs/EditStepDialog.svelte';
   import DeleteStepDialog from '../dialogs/DeleteStepDialog.svelte';
   import AddDatapointDialog from '../dialogs/AddDatapointDialog.svelte';
-  import { edges, edges as edgesStore } from '$lib/store';	
+  import { edges as edgesStore } from '$lib/store';	
 
   type $$Props = NodeProps;
 

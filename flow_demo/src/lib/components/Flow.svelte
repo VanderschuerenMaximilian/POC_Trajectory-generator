@@ -22,6 +22,7 @@
   import TrajectroyPanel from './general/TrajectroyPanel.svelte';
   import type { ITrajectoryObject } from './../types';
   import OwnStepNode from './nodes/OwnStepNode.svelte';
+  import OwnOptionNode from './nodes/OwnOptionNode.svelte';
   import DragAndDropMenu from './general/DragAndDropMenu.svelte';
   import ElkExtraction from '$lib/utilClasses/ElkNodes';
 
@@ -29,7 +30,8 @@
   const flowMethods = new FlowMethods();
   const snapGrid: [number, number] = [10, 10];
   const nodeTypes: NodeTypes = {
-    stepNode: OwnStepNode,
+    ownStepNode: OwnStepNode,
+    ownOptionNode: OwnOptionNode,
   };
   const { screenToFlowPosition, setCenter, setZoom } = useSvelteFlow();
 

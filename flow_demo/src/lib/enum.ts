@@ -12,7 +12,9 @@ export enum TrajectoryNodeTypes {
     phase = 'phaseNode',
     event = 'eventNode',
     step = 'stepNode',
+    ownStep = 'ownStepNode',
     option = 'optionNode',
+    ownOption = 'ownOptionNode',
     datapoint = 'datapointNode'
 }
 

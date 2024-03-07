@@ -9,7 +9,6 @@
     trajectory as trajectoryStore,
     items as itemsStore,
     carouselData as carouselDataStore,
-    activeCarouselItemName,
   } from '$lib/store';
   import type { ICarouselItem } from '$lib/types';
   import JsonExtraction from '$lib/utilClasses/Json';
@@ -72,7 +71,7 @@
   </div>
   <ToggleConcepten on:toggle={onToggle} />
 </div>
-<main style="height: {mainHeight? mainHeight: '72vh'};">
+<main style="height: {mainHeight ? mainHeight : '72vh'};">
   {#if toggleState}
     <Header {items} />
   {/if}
