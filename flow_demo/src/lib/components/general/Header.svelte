@@ -93,9 +93,7 @@
 
   function getPos(current: number, active: number): number {
     const diff = current - active;
-    if (Math.abs(current - active) > 3) {
-      return -current;
-    }
+    if (Math.abs(current - active) > 3) return -current;
 
     return diff;
   }
@@ -103,36 +101,25 @@
   function swapPos(current: number, active: number): number {
     const diff = current - active;
 
-    // TODO: make clean code of this
-    if (diff < -3) {
-      if (diff + 7 > 3) {
-        return diff + 6;
-      } else return diff + 7;
-    } else if (diff > 3) {
-      if (diff - 7 < -3) {
-        return diff - 6;
-      } else return diff - 7;
-    } else {
-      return diff;
-    }
-
-    // 👇 like this?
-    // if (Math.abs(diff) > 3) {
-
-    // } else return diff;
+    return diff < -3
+      ? diff + 7 > 3
+        ? diff + 6
+        : diff + 7
+      : diff > 3
+        ? diff - 7 < -3
+          ? diff - 6
+          : diff - 7
+        : diff;
   }
 
   function assignIndex(items: ICarouselItem[], index: number): number {
-    // TODO: make clean code of this
-    if (index + 3 === items.length) {
-      return -3;
-    } else if (index + 2 === items.length) {
-      return -2;
-    } else if (index + 1 === items.length) {
-      return -1;
-    } else {
-      return index;
-    }
+    return index + 3 === items.length
+      ? -3
+      : index + 2 === items.length
+        ? -2
+        : index + 1 === items.length
+          ? -1
+          : index;
   }
 
   function getNext(): void {
@@ -202,7 +189,6 @@
 
 <style scoped>
   header {
-    /* background-color: #f3f3f3; */
     padding: 0.25rem;
     border-bottom: 1px solid #e0e0e0;
   }

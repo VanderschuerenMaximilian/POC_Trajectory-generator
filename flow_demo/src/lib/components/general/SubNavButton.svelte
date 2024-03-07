@@ -21,10 +21,8 @@
   id={i.toString()}
   on:click={handleClick}
   class="{item.type === 'event' ? 'event' : 'phase'}
-  {item.name === selectedName && item.type === 'event'
-    ? 'event_active'
-    : ''}
-{item.name === selectedName && item.type === 'phase' ? 'phase_active' : ''}
+  {item.name === selectedName && item.type === 'event' ? 'event_active' : ''}
+  {item.name === selectedName && item.type === 'phase' ? 'phase_active' : ''}
   "
 >
   {item.name.charAt(0).toUpperCase() + item.name.charAt(1)}
