@@ -19,14 +19,7 @@
 </script>
 
 {#if trajectory}
-  {@const trajectoryObj = {
-    id: trajectory.id.toString(),
-    title: trajectory.episode_object.name,
-    description: trajectory.episode_object.description,
-    version: trajectory.version_number,
-    domain: trajectory.episode_object.concept.domain_name,
-  }}
-  <EditTrajectoryDialog bind:dialog {trajectoryObj} />
+  <EditTrajectoryDialog bind:dialog trajectoryObject={trajectory} />
 
   <Panel position="top-left">
     <div

@@ -2,7 +2,6 @@
   import JsonExtraction from '$lib/utilClasses/Json';
   import SvelvetExtraction from '$lib/utilClasses/SvelvetNodes'
   import Header from '$lib/components/general/Header.svelte';
-  import ToggleConcepten from '$lib/components/general/ToggleConcepten.svelte';
   import SvelvetFlow from '$lib/components/SvelvetFlow.svelte';
   import IDBJson from '$lib/data/IBD_Crohn_Disease.json';
   import { onMount } from 'svelte';
@@ -17,7 +16,6 @@
   const extraction = new JsonExtraction();
   const svelvetExtraction = new SvelvetExtraction();
   let items: IMainItemsJSON = [];
-  let toggleState: boolean = false;
 
   onMount(async () => {
     const { trajectoryObject: trajectoryObj, items: PhasesAndEvents } =
@@ -32,18 +30,12 @@
       );
     svelvetNodes.set(nodes);
     svelvetEdges.set(edges);
-    // console.log('nodes: ', nodes, 'edges: ', edges);
   });
-
-  // function onToggle() {
-  //   toggleState = !toggleState;
-  // }
 </script>
 
 <div style="opacity: 0;">
   <Header {items} />
 </div>
-<!-- <ToggleConcepten on:toggle={onToggle} /> -->
 <main>
   <SvelvetFlow />
 </main>

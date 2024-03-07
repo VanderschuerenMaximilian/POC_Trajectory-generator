@@ -20,7 +20,6 @@ export interface ICarouselDataItem {
 
 export type ICarouselDataItemNode = IStepNode | IOptionNode;
 
-// TODO: complete this interface
 export interface IDatapointNode extends INode {
     datapoint: IDatapointNodeData
     location: IDataNodeLocation   

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-  import type { IMainItemJSON, ICarouselItem } from '../../types';
+  import type { ICarouselItem } from '../../types';
   import { activeCarouselItemName } from '$lib/store';
 
   export let i: number;

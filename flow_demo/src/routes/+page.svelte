@@ -8,10 +8,10 @@
   import {
     trajectory as trajectoryStore,
     items as itemsStore,
-    activeItem,
     carouselData as carouselDataStore,
+    activeCarouselItemName,
   } from '$lib/store';
-  import type { IPhaseJSON, IEventJSON, ICarouselItem } from '$lib/types';
+  import type { ICarouselItem } from '$lib/types';
   import JsonExtraction from '$lib/utilClasses/Json';
   import ToggleConcepten from '$lib/components/general/ToggleConcepten.svelte';
   import Extraction from '$lib/utilClasses/Nodes';
@@ -47,7 +47,7 @@
   <section>
     <SvelteFlowProvider>
         {#if toggleState}
-          {#key $activeItem}
+          {#key $activeCarouselItemName}
             <Flow />
           {/key}
         {:else}

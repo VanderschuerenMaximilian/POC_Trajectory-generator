@@ -7,7 +7,7 @@
   import {
     trajectory as trajectoryStore,
     items as itemsStore,
-    activeItem,
+    activeCarouselItemName,
   } from '$lib/store';
   import type { IMainItemsJSON } from '$lib/types';
   import JsonExtraction from '$lib/utilClasses/Json';
@@ -24,14 +24,14 @@
   });
 </script>
 
-<!-- <main>
+<main>
   <div style="opacity: 0;">
     <Header {items} />
   </div>
   <Header {items} />
   <section>
     <SvelteFlowProvider>
-      {#key $activeItem}
+      {#key $activeCarouselItemName}
         <Flow />
       {/key}
     </SvelteFlowProvider>
@@ -46,4 +46,4 @@
   section {
     height: 68vh;
   }
-</style> -->
+</style>
