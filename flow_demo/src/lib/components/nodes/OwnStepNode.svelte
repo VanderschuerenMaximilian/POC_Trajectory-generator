@@ -10,11 +10,12 @@
   } from '@xyflow/svelte';
   import { ChevronDown, Plus } from 'lucide-svelte';
   import { onMount } from 'svelte';
+  import NodeCustomization from './Node';
   import Datapoint from '../general/Datapoint.svelte';
   import EditStepDialog from '../dialogs/EditStepDialog.svelte';
   import DeleteStepDialog from '../dialogs/DeleteStepDialog.svelte';
   import AddDatapointDialog from '../dialogs/AddDatapointDialog.svelte';
-  import { edges as edgesStore } from '$lib/store';	
+  import { edges as edgesStore } from '$lib/store';
 
   type $$Props = NodeProps;
 
@@ -48,9 +49,10 @@
   positionAbsoluteY;
   // TODO: make interfaces for the own/custom nodes
   export let data: any;
+  const nodeCustomization = new NodeCustomization();
   let foldStep = false;
   let foldDatapoint = false;
-  let node: any;
+  let node: HTMLDivElement;
   let editDialog: HTMLDialogElement;
   let deleteDialog: HTMLDialogElement;
   let addDatapointDialog: HTMLDialogElement;
@@ -58,15 +60,19 @@
   let initialHeight: number;
 
   onMount(() => {
-    assignKeyboardFeatures();
-    if (node)
-      (initalWidth = node.clientWidth), (initialHeight = node.clientHeight);
+    nodeCustomization.assignKeyboardFeatures(id, node, fitView);
   });
-  
+
   const { fitView } = useSvelteFlow();
-  const sourceConnections = useHandleConnections({ nodeId: id, type: 'source' });
-  const targetConnections = useHandleConnections({ nodeId: id, type: 'target' });
-  
+  const sourceConnections = useHandleConnections({
+    nodeId: id,
+    type: 'source',
+  });
+  const targetConnections = useHandleConnections({
+    nodeId: id,
+    type: 'target',
+  });
+
   function foldChilds() {
     foldStep = !foldStep;
   }
@@ -88,30 +94,19 @@
   }
 
   // TODO: refactor so each node could use this function
-  function zoomIn() {
-    fitView({ nodes: [{ id: id }], duration: 600, padding: 1 });
-  }
-
-  // TODO: refactor so each node could use this function
-  function assignKeyboardFeatures() {
-    node.addEventListener('click', (event: any) => {
-      if (event?.altKey) {
-        zoomIn();
-      }
-    });
-  }
-
-  // TODO: refactor so each node could use this function
   function validateConnections(currentConnections: any[]) {
-    if (!currentConnections[1]) return
-    const notValidConnection = $edgesStore[$edgesStore.length - 1].id === currentConnections[1].edgeId
+    if (!currentConnections[1]) return;
+    const notValidConnection =
+      $edgesStore[$edgesStore.length - 1].id === currentConnections[1].edgeId;
     if (notValidConnection) {
-      $edgesStore = $edgesStore.slice(0, $edgesStore.length - 1)
+      $edgesStore = $edgesStore.slice(0, $edgesStore.length - 1);
     }
   }
 
-  $: validateConnections($sourceConnections)
-  $: validateConnections($targetConnections)
+  $: validateConnections($sourceConnections);
+  $: validateConnections($targetConnections);
+  $: if (node)
+    (initalWidth = node.clientWidth), (initialHeight = node.clientHeight);
 </script>
 
 {#if data}
@@ -142,7 +137,7 @@
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <div
   bind:this={node}
-  on:dblclick={zoomIn}
+  on:dblclick={() => {nodeCustomization.zoomIn(id, fitView)}}
   class="container"
   style={selected ? 'outline: 2px solid #555555' : 'outline:none'}
 >
