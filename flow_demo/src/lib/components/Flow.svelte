@@ -53,12 +53,12 @@
     $nodesStore = elkNodes;
     // @ts-expect-error
     $edgesStore = elkEdges;
-    const middleNode = Math.floor($nodesStore.length / 2);
-    setCenter(
-      $nodesStore[middleNode].position.x,
-      $nodesStore[middleNode].position.y
-    );
-    setZoom(0.5);
+    // const middleNode = Math.floor($nodesStore.length / 2);
+    // setCenter(
+    //   $nodesStore[middleNode].position.x,
+    //   $nodesStore[middleNode].position.y
+    // );
+    // setZoom(0.5);
   }
 
   function onEdgeDrop(event: MouseEvent | TouchEvent) {

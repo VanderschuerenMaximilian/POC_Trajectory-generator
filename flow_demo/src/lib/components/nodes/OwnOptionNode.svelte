@@ -3,6 +3,8 @@
   import { ChevronDown } from 'lucide-svelte';
   import NodeCustomization from './Node';
   import { onMount } from 'svelte';
+  import EditOptionDialog from '../dialogs/EditOptionDialog.svelte';
+  import DeleteOptionDialog from '../dialogs/DeleteOptionDialog.svelte';
 
   type $$Props = NodeProps;
 
@@ -37,7 +39,7 @@
   // TODO: make interfaces for the own/custom nodes
   export let data: any;
   const nodeCustomization = new NodeCustomization();
-  let foldStep = false;
+  let foldOption = false;
   let node: HTMLDivElement;
   let editDialog: HTMLDialogElement;
   let deleteDialog: HTMLDialogElement;
@@ -52,24 +54,24 @@
   })
 
   function editOption() {
-
+    editDialog.showModal();
   }
 
   function deleteOption() {
-
+    deleteDialog.showModal();
   }
 
   function foldChilds() {
-
+    foldOption = !foldOption;
   }
 </script>
 
 <!-- TODO: make option dialogs -->
-<!-- {#if data}
-  <EditOptionDialog bind:editDialog step={data} />
-  <DeleteOptionDialog bind:deleteDialog step={data} />
-  <AddConditionStatusDialog bind:addConditionStatusDialog step={data} />
-{/if} -->
+{#if data}
+  <EditOptionDialog bind:editDialog option={data} />
+  <DeleteOptionDialog bind:deleteDialog option={data} />
+  <!-- <AddConditionStatusDialog bind:addConditionStatusDialog step={data} /> -->
+{/if}
 
 <NodeToolbar position={Position.Top} align={'start'}>
   <div class="toolbar__container">
@@ -107,13 +109,13 @@
       <ChevronDown
         size="24"
         color="white"
-        style="{foldStep
+        style="{foldOption
           ? 'transform: rotate(180deg);'
           : 'transform: rotate(0);'} transition: all 0.15s ease-in;"
       />
     </button>
   </div>
-  <div class="body__container" style={foldStep ? 'display: none' : ''}>
+  <div class="body__container" style={foldOption ? 'display: none' : ''}>
     <div class="info__container">
       <div>
         <p>description:</p>

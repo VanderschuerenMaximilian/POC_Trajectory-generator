@@ -75,7 +75,7 @@
   {#if toggleState}
     <Header {items} />
   {/if}
-  <section>
+  <section class="flow__container">
     <SvelteFlowProvider>
       {#if toggleState}
         <Flow />
@@ -92,7 +92,7 @@
     flex-direction: column;
   }
 
-  section {
+  .flow__container {
     flex: 1;
   }
 </style>
