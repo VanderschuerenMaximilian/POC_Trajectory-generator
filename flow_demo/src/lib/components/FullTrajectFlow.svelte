@@ -24,6 +24,7 @@
   import EventNode from './nodes/EventNode.svelte';
   import DatapointNode from './nodes/DatapointNode.svelte';
   import OptionNode from './nodes/OptionNode.svelte';
+  import DeviderNode from './nodes/DeviderNode.svelte';
   import { TrajectoryColors, TrajectoryNodeTypes } from '$lib/enum';
 
   export let trajectoryNodes: Node[];
@@ -38,6 +39,7 @@
     stepNode: StepNode,
     datapointNode: DatapointNode,
     optionNode: OptionNode,
+    deviderNode: DeviderNode,
   };
 
   async function getFullTrajectoryNodes() {

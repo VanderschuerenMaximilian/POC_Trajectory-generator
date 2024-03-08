@@ -5,7 +5,6 @@ const elk = new ELK();
 const mrTreeOptions: LayoutOptions = {
     'elk.algorithm': 'mrtree',
     'elk.spacing.nodeNode': '280',
-    'elk.direction': 'DOWN', 
 }
 const boxOptions: LayoutOptions = {
     'elk.algorithm': 'rectpacking',
@@ -42,7 +41,7 @@ export default class ElkExtraction {
                 position: { x: node.x, y: node.y },
             })
         );
-
+        console.log(flattenedArray)
         return { nodes: flattenedArray, edges: elkGraph.edges ?? [] };
     }
 

@@ -4,7 +4,8 @@ export enum TrajectoryColors {
     event = '#62caed',
     step = 'hotpink',
     option = 'orange',
-    datapoint = '#f3ee09'
+    datapoint = '#f3ee09',
+    devider = '#525252'
 }
 
 export enum TrajectoryNodeTypes {
@@ -15,7 +16,8 @@ export enum TrajectoryNodeTypes {
     ownStep = 'ownStepNode',
     option = 'optionNode',
     ownOption = 'ownOptionNode',
-    datapoint = 'datapointNode'
+    datapoint = 'datapointNode',
+    devider = 'deviderNode'
 }
 
 export enum TrajectoryTypes {
